@@ -35,9 +35,8 @@
   // falls das Modell nicht nach vorn (+Z) schaut.
   //  "Gym Equipment" von Low Poly Models (sketchfab.com), CC BY 4.0 — ein GLB
   //  mit mehreren Geräten; node = Name des Teilobjekts daraus.
-  var GLB_MODELS = {
-    chestpress: { url: "assets/models/gym-equipment.glb", node: "Parallel_7", yaw: 0 }
-  };
+  //  Brustpresse: kein passendes Modell im Pack -> gebautes Modell (MODELS).
+  var GLB_MODELS = {};
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
   // Alle Geräte-Knoten im Pack — für die Live-Auswahl im 3D-Panel.
   var GLB_NODE_CHOICES = [
@@ -197,126 +196,88 @@
   // -Z = hinten, +X = rechts, Ursprung Bodenmitte.
   function buildChestPress(fp, tier) {
     var g = new THREE.Group();
-    var blk = new THREE.MeshStandardMaterial({ color: 0x161618, roughness: 0.5, metalness: 0.3 });
-    var uphol = new THREE.MeshStandardMaterial({ color: 0x0d0d0f, roughness: 0.95 });
-    var hous = new THREE.MeshStandardMaterial({ color: 0x3b3c40, roughness: 0.7, metalness: 0.2 });
-    var silver = new THREE.MeshStandardMaterial({ color: 0xcbced3, roughness: 0.3, metalness: 0.7 });
-    var yellow = new THREE.MeshStandardMaterial({ color: 0xe0c02f, roughness: 0.45, metalness: 0.15 });
-    var rub = new THREE.MeshStandardMaterial({ color: 0x0a0a0b, roughness: 1 });
-    var accent = new THREE.MeshStandardMaterial({ color: tier === "premium" ? 0xb4472e : 0x4f6f4f, roughness: 0.55 });
+    // Low-Poly-Stil passend zum Geräte-Pack: mattschwarzer Rundrohr-Rahmen,
+    // orange Polster, schwarze Hantelscheiben.
+    var blk = new THREE.MeshStandardMaterial({ color: 0x1b1b1d, roughness: 0.8, metalness: 0.05 });
+    var padM = new THREE.MeshStandardMaterial({ color: 0xf2a01e, roughness: 0.85, metalness: 0 });
+    var disc = new THREE.MeshStandardMaterial({ color: 0x121214, roughness: 0.7, metalness: 0.1 });
+    var grip = new THREE.MeshStandardMaterial({ color: 0x0c0c0d, roughness: 1 });
 
     // ============================================================
-    //  Taurus/Impulse IFP1201 — plattengeladene ISO-Brustpresse.
-    //  Nach Vorder-/Seiten-/Draufsicht des Herstellers:
-    //   - komplett FLACHSTAHL (Rechteckprofil), kein Rundrohr.
-    //   - hinten hoher, leicht zurückgeneigter Lehnenmast.
-    //   - grosses Seitendreieck: langer Diagonalgurt front-unten ->
-    //     Mast-oben (Kennzeichen der Seitenansicht).
-    //   - Drehpunkt tief im vorderen Drittel, aussen gelbe
-    //     "LEVEL"-Scheibe.
-    //   - je Druckarm ein A-Bock aus zwei Flachgurten, oben ein
-    //     waagerechter Griff nach VORN; je Seite zwei nach
-    //     vorn-aussen gespreizte Scheibendorne mit gelber Kappe.
-    //   - Assist-Feder diagonal, Sitz mit Zahn-Rastschiene +
-    //     grauer Verkleidung, hohes flaches Rückenpolster ~13°.
-    //  +Z = vorn (Blickrichtung / Griffe / Dorne), -Z = hinten.
-    //  Herstellermass B 128 (X) x L 98 (Z) x H 125 cm.
+    //  Sitzende BRUSTPRESSE, plattengeladen — im Pack-Stil.
+    //  +Z = vorn (Blickrichtung, Griffe), -Z = hinten (Lehne).
+    //  Sitzt tief, Griffe vor der Brust, Druck nach vorn.
     // ============================================================
 
-    // ---- Bodenrahmen: Flachstahl-Längsholme + Queren + graue Füße ----
+    // ---- Bodenrahmen + gespreizte Füße ----
     [1, -1].forEach(function (s) {
-      beam(g, V(s * 0.28, 0.10, 0.50), V(s * 0.28, 0.10, -0.44), 0.07, 0.12, blk); // Längsholm
+      tube(g, V(s * 0.30, 0.07, 0.46), V(s * 0.30, 0.07, -0.42), 0.035, blk);   // Längsholm
+      tube(g, V(s * 0.30, 0.07, 0.44), V(s * 0.44, 0.02, 0.54), 0.028, blk);    // Fuß vorn
+      tube(g, V(s * 0.30, 0.07, -0.40), V(s * 0.42, 0.02, -0.50), 0.028, blk);  // Fuß hinten
+      joint(g, V(s * 0.44, 0.03, 0.54), 0.045, blk);
+      joint(g, V(s * 0.42, 0.03, -0.50), 0.045, blk);
     });
-    beam(g, V(-0.28, 0.10, 0.47), V(0.28, 0.10, 0.47), 0.11, 0.08, blk);            // vordere Quere
-    beam(g, V(-0.28, 0.10, -0.41), V(0.28, 0.10, -0.41), 0.11, 0.08, blk);          // hintere Quere
-    [[-0.37, 0.50], [0.37, 0.50], [-0.35, -0.42], [0.35, -0.42]].forEach(function (f) {
-      tube(g, V(f[0] * 0.78, 0.10, f[1] * 0.96), V(f[0], 0.08, f[1]), 0.03, blk);   // Ausleger zum Fuss
-      var ft = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.07, 0.15), hous);
-      ft.position.set(f[0], 0.035, f[1]); ft.castShadow = true; g.add(ft);
-    });
+    tube(g, V(-0.30, 0.07, 0.44), V(0.30, 0.07, 0.44), 0.03, blk);              // Quere vorn
+    tube(g, V(-0.30, 0.07, -0.40), V(0.30, 0.07, -0.40), 0.03, blk);            // Quere hinten
 
-    // ---- Hinterer Lehnenmast (A-Frame, Flachstahl, ~11° zurück) ----
+    // ---- Hinterer A-Mast für die Lehne (leicht zurück) ----
     [1, -1].forEach(function (s) {
-      beam(g, V(s * 0.17, 0.11, -0.40), V(s * 0.17, 1.36, -0.16), 0.04, 0.13, blk);  // Mast
-      beam(g, V(s * 0.17, 1.36, -0.16), V(s * 0.17, 1.30, 0.00), 0.04, 0.10, blk);   // Kopf-Haken vorn
-      // Grosses Seitendreieck: Diagonalgurt front-unten -> Mast-oben
-      beam(g, V(s * 0.24, 0.11, 0.42), V(s * 0.17, 1.16, -0.14), 0.04, 0.12, blk);
-      // Strebe Basis -> Drehpunkt
-      beam(g, V(s * 0.24, 0.11, 0.14), V(s * 0.33, 0.50, 0.12), 0.04, 0.09, blk);
+      tube(g, V(s * 0.15, 0.08, -0.34), V(s * 0.12, 1.20, -0.12), 0.045, blk);  // Mast
+      tube(g, V(s * 0.24, 0.08, 0.32), V(s * 0.14, 0.92, -0.10), 0.036, blk);   // Seitendreieck-Diagonale
     });
-    beam(g, V(-0.17, 1.31, -0.13), V(0.17, 1.31, -0.13), 0.07, 0.09, blk);           // Kopf-Quere
-    beam(g, V(-0.17, 0.62, -0.30), V(0.17, 0.62, -0.30), 0.06, 0.08, blk);           // mittlere Quere
-    beam(g, V(0, 0.52, -0.13), V(0, 1.30, -0.17), 0.16, 0.05, blk);                  // Lehnen-Rückplatte
+    tube(g, V(-0.12, 1.16, -0.12), V(0.12, 1.16, -0.12), 0.032, blk);           // Kopf-Quere
+    tube(g, V(-0.14, 0.56, -0.22), V(0.14, 0.56, -0.22), 0.03, blk);            // mittlere Quere
+    tube(g, V(0, 0.28, -0.16), V(0, 1.10, -0.14), 0.05, blk);                   // Lehnen-Mittelträger
 
-    // ---- Drehwelle + Naben + gelbe "LEVEL"-Scheibe ----
-    tube(g, V(-0.33, 0.50, 0.12), V(0.33, 0.50, 0.12), 0.028, blk);
+    // ---- Drehwelle (mittlere Höhe, vorderes Drittel) ----
+    tube(g, V(-0.30, 0.60, 0.10), V(0.30, 0.60, 0.10), 0.032, blk);
     [1, -1].forEach(function (s) {
-      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.11, 20), blk);
-      hub.rotation.z = Math.PI / 2; hub.position.set(s * 0.33, 0.50, 0.12); hub.castShadow = true; g.add(hub);
-      var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.03, 20), yellow);
-      disc.rotation.z = Math.PI / 2; disc.position.set(s * 0.375, 0.50, 0.12); g.add(disc);
-      var ctr = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.05, 12), silver);
-      ctr.rotation.z = Math.PI / 2; ctr.position.set(s * 0.39, 0.50, 0.12); g.add(ctr);
+      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.062, 0.10, 14), blk);
+      hub.rotation.z = Math.PI / 2; hub.position.set(s * 0.30, 0.60, 0.10); hub.castShadow = true; g.add(hub);
+      tube(g, V(s * 0.28, 0.08, 0.04), V(s * 0.30, 0.58, 0.10), 0.036, blk);    // Stütze zur Welle
     });
 
-    // ---- Assist-Feder (diagonal, angedeutet) ----
-    tube(g, V(0.09, 0.42, -0.02), V(0.05, 0.66, -0.16), 0.014, silver);
-    joint(g, V(0.09, 0.42, -0.02), 0.02, blk);
-    joint(g, V(0.05, 0.66, -0.16), 0.02, blk);
+    // ---- Sitz (orange) + Träger ----
+    tube(g, V(0, 0.08, 0.20), V(0, 0.42, 0.18), 0.045, blk);
+    var seat = pad(0.36, 0.38, 0.09, padM);
+    seat.rotation.x = -Math.PI / 2 + 0.05; seat.position.set(0, 0.46, 0.18); seat.castShadow = true; g.add(seat);
 
-    // ---- Sitz: graue Verkleidung + Zahn-Rastschiene + Polster ----
-    var box = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.22, 0.24), hous);
-    box.position.set(0, 0.40, 0.02); box.castShadow = true; g.add(box);
-    g.add(new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry),
-      new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 })).translateY(0.40));
-    var rack = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.34, 0.05), blk);
-    rack.position.set(0, 0.30, -0.12); rack.castShadow = true; g.add(rack);
-    for (var tt = 0; tt < 9; tt++) {
-      var th = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.014, 0.06), blk);
-      th.position.set(0, 0.16 + tt * 0.034, -0.12); g.add(th);
-    }
-    beam(g, V(0, 0.11, 0.22), V(0, 0.44, 0.16), 0.07, 0.09, blk);                    // Sitzträger
-    var seat = pad(0.40, 0.42, 0.09, uphol);
-    seat.rotation.x = -Math.PI / 2 + 0.05; seat.position.set(0, 0.475, 0.17); g.add(seat);
+    // ---- Lehne (orange), breit, ~12° zurück ----
+    var back = pad(0.40, 0.60, 0.10, padM);
+    back.rotation.x = -0.20; back.position.set(0, 0.82, -0.08); back.castShadow = true; g.add(back);
 
-    // ---- Rückenpolster: hoch, flach (dünn), ~13° zurück ----
-    var back = pad(0.42, 0.80, 0.09, uphol);
-    back.rotation.x = -0.22; back.position.set(0, 0.90, -0.06); back.castShadow = true; g.add(back);
+    // ---- Druckarme: je Seite ein DREIECK-Turm (aussen fast senkrecht,
+    //      innen Diagonale zum Drehpunkt), Griff waagerecht nach VORN.
+    //      Von vorne: zwei schmale Türme neben der Lehne, KEIN V. ----
     [1, -1].forEach(function (s) {
-      var bd = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 0.05), accent);
-      bd.position.set(s * 0.20, 0.86, -0.10); g.add(bd);                             // Marken-Akzent am Mast
-    });
+      var P  = V(s * 0.26, 0.58, 0.08);   // Drehpunkt an der Welle (innen)
+      var Bo = V(s * 0.42, 0.09, 0.24);   // Turmfuß aussen
+      var T  = V(s * 0.42, 1.02, 0.30);   // Turmspitze (Griffanbindung), fast über Bo
 
-    // ---- Druckarme: A-Bock aus zwei Flachgurten, Griff nach VORN ----
-    [1, -1].forEach(function (s) {
-      var P  = V(s * 0.33, 0.50, 0.12);   // Drehpunkt / A-Bock-Spitze
-      var To = V(s * 0.34, 1.00, 0.28);   // A-Bock oben aussen
-      var Ti = V(s * 0.19, 1.02, 0.32);   // A-Bock oben innen
-
-      beam(g, P, To, 0.08, 0.035, blk);   // aeusserer Gurt
-      beam(g, P, Ti, 0.08, 0.035, blk);   // innerer Gurt
-      beam(g, Ti, To, 0.045, 0.05, blk);  // obere Verbindung
+      tube(g, Bo, T, 0.05, blk);          // aeusserer Holm (fast senkrecht)
+      tube(g, P, T, 0.045, blk);          // innere Diagonale zum Drehpunkt
+      tube(g, P, Bo, 0.036, blk);         // Untergurt schließt das Dreieck
       joint(g, P, 0.055, blk);
+      joint(g, T, 0.05, blk);
 
-      // waagerechter Griff nach vorn (+Z), kurzer senkrechter D-Holm
-      tube(g, V(s * 0.27, 1.01, 0.28), V(s * 0.27, 1.01, 0.52), 0.022, rub);
-      tube(g, V(s * 0.27, 0.92, 0.49), V(s * 0.27, 1.10, 0.49), 0.02, rub);
-      capZ(g, s * 0.27, 1.01, 0.54, 0.024, 0.03, silver);
-      joint(g, V(s * 0.27, 1.01, 0.30), 0.03, blk);
+      // Griff: waagerechter Holm nach vorn + senkrechter Handgriff
+      tube(g, V(s * 0.42, 1.00, 0.24), V(s * 0.42, 1.00, 0.56), 0.028, grip);
+      tube(g, V(s * 0.42, 0.86, 0.52), V(s * 0.42, 1.14, 0.52), 0.028, grip);
+      joint(g, V(s * 0.42, 1.00, 0.30), 0.034, blk);
+      capZ(g, s * 0.42, 1.00, 0.58, 0.032, 0.03, blk);
 
-      // zwei nach vorn-aussen gespreizte Scheibendorne mit gelber Kappe
-      tube(g, V(s * 0.31, 0.30, 0.16), V(s * 0.45, 0.22, 0.42), 0.028, blk);
-      capZ(g, s * 0.45, 0.22, 0.44, 0.033, 0.05, yellow);
-      tube(g, V(s * 0.30, 0.30, 0.08), V(s * 0.42, 0.22, 0.30), 0.028, blk);
-      capZ(g, s * 0.42, 0.22, 0.32, 0.033, 0.05, yellow);
-
-      // schwarze Gummipuffer (Endlagen) vorn + hinten
-      capZ(g, s * 0.30, 0.15, 0.40, 0.05, 0.09, rub);
-      capZ(g, s * 0.20, 0.15, -0.40, 0.045, 0.08, rub);
+      // Scheibendorn vorn-unten am Turm + zwei schwarze Hantelscheiben
+      tube(g, V(s * 0.40, 0.26, 0.20), V(s * 0.40, 0.24, 0.52), 0.03, blk);
+      [0.36, 0.44].forEach(function (zz) {
+        var pl = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 18), disc);
+        pl.rotation.z = Math.PI / 2; pl.position.set(s * 0.40, 0.25, zz);
+        pl.castShadow = true; g.add(pl);
+      });
+      capZ(g, s * 0.40, 0.24, 0.55, 0.032, 0.03, blk);
     });
 
-    var sx = Math.max(0.85, Math.min(1.12, (fp.w / 100) / 1.30));
-    var sz = Math.max(0.85, Math.min(1.12, (fp.d / 100) / 1.00));
+    var sx = Math.max(0.85, Math.min(1.15, (fp.w / 100) / 1.28));
+    var sz = Math.max(0.85, Math.min(1.15, (fp.d / 100) / 0.98));
     g.scale.set(sx, 1, sz);
     return g;
   }
