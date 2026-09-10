@@ -28,24 +28,6 @@
   };
   var EQUIP_H_DEFAULT = 120;
 
-  // Optionale echte 3D-Modelle (GLB/glTF). Liegt die Datei im Repo, wird sie
-  // automatisch statt der gebauten Geometrie geladen und maßstäblich auf die
-  // Gerätegrundfläche skaliert. Fehlt die Datei (oder GLTFLoader), greift
-  // lautlos das gebaute Modell bzw. die Box. yaw = Zusatzdrehung in Grad,
-  // falls das Modell nicht nach vorn (+Z) schaut.
-  //  "Gym Equipment" von Low Poly Models (sketchfab.com), CC BY 4.0 — ein GLB
-  //  mit mehreren Geräten; node = Name des Teilobjekts daraus.
-  //  Brustpresse: kein passendes Modell im Pack -> gebautes Modell (MODELS).
-  var GLB_MODELS = {};
-  var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
-  // Alle Geräte-Knoten im Pack — für die Live-Auswahl im 3D-Panel.
-  var GLB_NODE_CHOICES = [
-    "Bench press_0", "Treadmill_1", "Bench press-up_2", "Armpit_3", "Butterfly_4",
-    "Bench press-dn_5", "Shoulder_6", "Parallel_7", "Arc Bench_8",
-    "Dumbbell stand_9", "Hulter stand_10", "Feetpress_11"
-  ];
-  var glbNodeOverride = null; // vom Panel gesetzt, überschreibt GLB_MODELS.chestpress.node
-
   var toggleBtn, panel, heightInput, heightLabel, wallBtn, zoomInBtn, zoomOutBtn;
   var renderer, scene, camera, roomGroup, wallEdges = [], raf = null, built = false;
   var target, theta = Math.PI * 0.72, phi = Math.PI * 0.34, radius = 9, radiusMin = 2.2, radiusMax = 40;
@@ -107,66 +89,9 @@
   }
 
   /* ---------- kleine Geometrie-Helfer ---------- */
-  function roundedRectShape(w, h, r) {
-    r = Math.min(r, w / 2 - 0.001, h / 2 - 0.001);
-    var s = new THREE.Shape();
-    s.moveTo(-w / 2 + r, -h / 2);
-    s.lineTo(w / 2 - r, -h / 2);
-    s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
-    s.lineTo(w / 2, h / 2 - r);
-    s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
-    s.lineTo(-w / 2 + r, h / 2);
-    s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
-    s.lineTo(-w / 2, -h / 2 + r);
-    s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
-    return s;
-  }
-  // weiches Polster: gerundetes Rechteck extrudiert + Fase
-  function pad(w, h, t, mat) {
-    var geo = new THREE.ExtrudeGeometry(roundedRectShape(w, h, Math.min(w, h) * 0.28), {
-      depth: t, bevelEnabled: true, bevelThickness: t * 0.4, bevelSize: t * 0.4, bevelSegments: 3, curveSegments: 10
-    });
-    geo.translate(0, 0, -t / 2);
-    var m = new THREE.Mesh(geo, mat);
-    m.castShadow = true;
-    return m;
-  }
-  // Rohr zwischen zwei Punkten (Stahlrahmen-Optik)
-  function tube(g, a, b, r, mat) {
-    var dir = new THREE.Vector3().subVectors(b, a);
-    var len = dir.length();
-    if (len < 1e-4) return;
-    var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 16), mat);
-    m.position.copy(a).add(b).multiplyScalar(0.5);
-    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
-    m.castShadow = true;
-    g.add(m);
-  }
-  function joint(g, p, r, mat) {
-    var m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), mat);
-    m.position.copy(p); m.castShadow = true; g.add(m);
-  }
-  // Rechteck-Profil-Balken zwischen zwei Punkten (Maschinen-Armen)
-  function beam(g, a, b, w, h, mat) {
-    var dir = new THREE.Vector3().subVectors(b, a);
-    var len = dir.length();
-    if (len < 1e-4) return;
-    var m = new THREE.Mesh(new THREE.BoxGeometry(w, len, h), mat);
-    m.position.copy(a).add(b).multiplyScalar(0.5);
-    m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
-    m.castShadow = true;
-    g.add(m);
-  }
-  // kurzer Zylinder mit Achse entlang Z (Griffe, Endkappen, Puffer)
-  function capZ(g, x, y, z, r, len, mat) {
-    var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 16), mat);
-    m.rotation.x = Math.PI / 2;
-    m.position.set(x, y, z); m.castShadow = true;
-    g.add(m);
-  }
   function V(x, y, z) { return new THREE.Vector3(x, y, z); }
 
-  /* ---------- Geräte-Modelle ---------- */
+  /* ---------- Geräte-Darstellung: maßstäbliche Box ---------- */
   function buildBox(fp, tier, hCm) {
     var g = new THREE.Group();
     var h = (hCm || EQUIP_H_DEFAULT) / 100;
@@ -177,191 +102,6 @@
     g.add(new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry),
       new THREE.LineBasicMaterial({ color: 0x2b2b2b, transparent: true, opacity: 0.3 })).translateY(h / 2));
     return g;
-  }
-
-  // Taurus Brustpresse IFP (= Impulse IFP1201) — nach Montageanleitung +
-  // Vorder-/Seiten-/Draufsicht. Eine sitzende BRUSTPRESSE (horizontaler
-  // Druck nach vorn), KEINE Schulter-/Latmaschine:
-  //  - Drehpunkt der Arme auf mittlerer Höhe (~0,55 m), nicht oben.
-  //  - je Arm ein waagerechter Griff, der nach VORN zeigt, auf Brust-/
-  //    Schulterhöhe (~0,96 m), weit außen.
-  //  - je Arm vorn unten am Boden ein Scheiben-Aufnahmedorn (50-mm-Optik)
-  //    mit gelber Kappe + gelb/schwarzer Gummipuffer; hinten ein Puffer.
-  //  - kompakter, getriangulierter schwarzer Rahmen (keine hohen Türme),
-  //    hoher, ~15° zurückgeneigter Lehnenpfosten, Assist-Feder diagonal.
-  //  - höhenverstellbarer Sitz mit sichtbarer Zahn-Rastschiene.
-  // Alles schwarz (Sitzgehäuse dunkelgrau, Griffkappen silber, Puffer gelb).
-  // Herstellermaß B 128 (X) x L 98 (Z) x H 125 cm.
-  // Lokale Achsen: +Z = vorn (Griffe/Dorne, Blickrichtung des Trainierenden),
-  // -Z = hinten, +X = rechts, Ursprung Bodenmitte.
-  function buildChestPress(fp, tier) {
-    var g = new THREE.Group();
-    // Low-Poly-Stil passend zum Geräte-Pack: mattschwarzer Rundrohr-Rahmen,
-    // orange Polster, schwarze Hantelscheiben.
-    var blk = new THREE.MeshStandardMaterial({ color: 0x1b1b1d, roughness: 0.8, metalness: 0.05 });
-    var padM = new THREE.MeshStandardMaterial({ color: 0xf2a01e, roughness: 0.85, metalness: 0 });
-    var disc = new THREE.MeshStandardMaterial({ color: 0x121214, roughness: 0.7, metalness: 0.1 });
-    var grip = new THREE.MeshStandardMaterial({ color: 0x0c0c0d, roughness: 1 });
-
-    // ============================================================
-    //  Sitzende BRUSTPRESSE, plattengeladen — im Pack-Stil.
-    //  +Z = vorn (Blickrichtung, Griffe), -Z = hinten (Lehne).
-    //  Sitzt tief, Griffe vor der Brust, Druck nach vorn.
-    // ============================================================
-
-    // ---- Bodenrahmen + gespreizte Füße ----
-    [1, -1].forEach(function (s) {
-      tube(g, V(s * 0.30, 0.07, 0.46), V(s * 0.30, 0.07, -0.42), 0.035, blk);   // Längsholm
-      tube(g, V(s * 0.30, 0.07, 0.44), V(s * 0.44, 0.02, 0.54), 0.028, blk);    // Fuß vorn
-      tube(g, V(s * 0.30, 0.07, -0.40), V(s * 0.42, 0.02, -0.50), 0.028, blk);  // Fuß hinten
-      joint(g, V(s * 0.44, 0.03, 0.54), 0.045, blk);
-      joint(g, V(s * 0.42, 0.03, -0.50), 0.045, blk);
-    });
-    tube(g, V(-0.30, 0.07, 0.44), V(0.30, 0.07, 0.44), 0.03, blk);              // Quere vorn
-    tube(g, V(-0.30, 0.07, -0.40), V(0.30, 0.07, -0.40), 0.03, blk);            // Quere hinten
-
-    // ---- Hinterer A-Mast für die Lehne (leicht zurück) ----
-    [1, -1].forEach(function (s) {
-      tube(g, V(s * 0.15, 0.08, -0.34), V(s * 0.12, 1.20, -0.12), 0.045, blk);  // Mast
-      tube(g, V(s * 0.24, 0.08, 0.32), V(s * 0.14, 0.92, -0.10), 0.036, blk);   // Seitendreieck-Diagonale
-    });
-    tube(g, V(-0.12, 1.16, -0.12), V(0.12, 1.16, -0.12), 0.032, blk);           // Kopf-Quere
-    tube(g, V(-0.14, 0.56, -0.22), V(0.14, 0.56, -0.22), 0.03, blk);            // mittlere Quere
-    tube(g, V(0, 0.28, -0.16), V(0, 1.10, -0.14), 0.05, blk);                   // Lehnen-Mittelträger
-
-    // ---- Sitz (orange) + EIN Träger darunter (nichts sonst am Sitz) ----
-    tube(g, V(0, 0.08, 0.16), V(0, 0.42, 0.18), 0.045, blk);
-    var seat = pad(0.36, 0.38, 0.09, padM);
-    seat.rotation.x = -Math.PI / 2 + 0.05; seat.position.set(0, 0.46, 0.18); seat.castShadow = true; g.add(seat);
-
-    // ---- Lehne (orange), breit, ~12° zurück ----
-    var back = pad(0.40, 0.60, 0.10, padM);
-    back.rotation.x = -0.20; back.position.set(0, 0.82, -0.08); back.castShadow = true; g.add(back);
-
-    // ---- Seitliche Kraftrahmen + Druckarme: KOMPLETT an den Seiten
-    //      (x ~ ±0.42), nichts läuft über den Sitz. Je Seite:
-    //      senkrechter Aussenholm, Diagonale zum hinteren Mast,
-    //      Drehnabe am Holm, Arm hoch-vorn zum Griff + runter-vorn
-    //      zum Scheibendorn. ----
-    [1, -1].forEach(function (s) {
-      var Bo = V(s * 0.42, 0.09, 0.22);   // Fuß Aussenholm
-      var T  = V(s * 0.42, 1.06, 0.24);   // Spitze Aussenholm
-      var Pv = V(s * 0.42, 0.60, 0.24);   // Drehnabe (am Holm, seitlich)
-      var Hr = V(s * 0.40, 0.34, 0.36);   // Wurzel Scheibendorn
-
-      tube(g, Bo, T, 0.05, blk);                                  // senkrechter Aussenholm
-      tube(g, V(s * 0.42, 0.98, 0.04), V(s * 0.14, 0.50, -0.30), 0.04, blk); // Diagonale zum Mast (hinter der Lehne)
-      tube(g, Bo, V(s * 0.30, 0.07, -0.12), 0.032, blk);          // Untergurt zum Bodenrahmen
-      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.12, 14), blk);
-      hub.rotation.z = Math.PI / 2; hub.position.set(s * 0.42, 0.60, 0.24); hub.castShadow = true; g.add(hub);
-
-      // Druckarm: von der Nabe hoch-vorn zum Griffkopf, runter-vorn zum Dorn
-      var Gb = V(s * 0.40, 0.90, 0.50);   // Griff-Basis
-      tube(g, Pv, Gb, 0.048, blk);
-      tube(g, Pv, Hr, 0.044, blk);
-      joint(g, Gb, 0.05, blk);
-
-      // Griffkopf oben am Arm: senkrechter Haupt-Handgriff + zwei Querholme
-      tube(g, V(s * 0.40, 0.86, 0.52), V(s * 0.40, 1.16, 0.52), 0.034, grip);   // senkrechter Griff
-      tube(g, V(s * 0.40, 1.13, 0.30), V(s * 0.40, 1.13, 0.52), 0.03, grip);    // oberer Querholm
-      tube(g, V(s * 0.40, 0.94, 0.40), V(s * 0.40, 0.94, 0.52), 0.028, grip);   // unterer Querholm
-      joint(g, V(s * 0.40, 1.16, 0.52), 0.038, blk);
-      joint(g, V(s * 0.40, 0.86, 0.52), 0.038, blk);
-
-      // Scheibendorn nach vorn + zwei schwarze Hantelscheiben
-      tube(g, Hr, V(s * 0.40, 0.30, 0.60), 0.03, blk);
-      [0.44, 0.52].forEach(function (zz) {
-        var pl = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 18), disc);
-        pl.rotation.z = Math.PI / 2; pl.position.set(s * 0.40, 0.32, zz);
-        pl.castShadow = true; g.add(pl);
-      });
-      capZ(g, s * 0.40, 0.30, 0.63, 0.032, 0.03, blk);
-    });
-
-    var sx = Math.max(0.85, Math.min(1.15, (fp.w / 100) / 1.28));
-    var sz = Math.max(0.85, Math.min(1.15, (fp.d / 100) / 0.98));
-    g.scale.set(sx, 1, sz);
-    return g;
-  }
-
-  var MODELS = { chestpress: buildChestPress };
-
-  /* ---------- optionale GLB/glTF-Modelle ---------- */
-  function makeGltfLoader() {
-    var loader = new THREE.GLTFLoader();
-    if (typeof THREE.DRACOLoader !== "undefined") {
-      var d = new THREE.DRACOLoader();
-      d.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/");
-      loader.setDRACOLoader(d);
-    }
-    return loader;
-  }
-
-  // lädt eine GLB-Datei einmalig, ruft cb(clone) bzw. cb(null) bei Fehler.
-  function loadGLB(url, cb) {
-    var c = glbCache[url];
-    // Callback immer asynchron, damit der Platzhalter sicher schon im Baum hängt.
-    if (c && c.obj) { var hit = c.obj.clone(); setTimeout(function () { cb(hit); }, 0); return; }
-    if (c && c.failed) { setTimeout(function () { cb(null); }, 0); return; }
-    if (c && c.pending) { c.pending.push(cb); return; }
-    if (typeof THREE === "undefined" || typeof THREE.GLTFLoader === "undefined") {
-      glbCache[url] = { failed: true }; setTimeout(function () { cb(null); }, 0); return;
-    }
-    glbCache[url] = c = { pending: [cb] };
-    makeGltfLoader().load(url, function (gltf) {
-      var root = gltf.scene || (gltf.scenes && gltf.scenes[0]);
-      if (!root) { finishGLB(url, null); return; }
-      root.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-      c.obj = root;
-      finishGLB(url, root);
-    }, undefined, function () { c.failed = true; finishGLB(url, null); });
-  }
-  function finishGLB(url, root) {
-    var c = glbCache[url]; if (!c) return;
-    var list = c.pending || []; c.pending = null;
-    list.forEach(function (fn) { fn(root ? root.clone() : null); });
-  }
-
-  // findet einen Knoten per Name — GLTFLoader ersetzt Leerzeichen im Namen
-  // durch "_" (sanitizeNodeName), Originalname liegt in userData.name.
-  function findGlbNode(root, name) {
-    var san = String(name).replace(/\s+/g, "_");
-    var hit = null;
-    root.traverse(function (o) {
-      if (hit) return;
-      if (o.name === name || o.name === san || (o.userData && o.userData.name === name)) hit = o;
-    });
-    return hit;
-  }
-
-  // reduziert eine Mehr-Geräte-Szene auf genau einen benannten Knoten,
-  // behält dabei die Transformationen aller Vorfahren.
-  function isolateNode(root, keep) {
-    var path = [];
-    for (var p = keep; p && p !== root; p = p.parent) path.unshift(p);
-    var parent = root;
-    path.forEach(function (n) {
-      parent.children.slice().forEach(function (c) { if (c !== n) parent.remove(c); });
-      parent = n;
-    });
-  }
-
-  // skaliert/zentriert ein geladenes Modell auf die Gerätegrundfläche (m),
-  // Boden auf y=0, Mitte über dem Ursprung — passend zur Item-Platzierung.
-  function fitGlb(obj, fp, hintHcm, yawDeg) {
-    var box = new THREE.Box3().setFromObject(obj);
-    var size = box.getSize(new THREE.Vector3());
-    var ctr = box.getCenter(new THREE.Vector3());
-    var sc = Math.min((fp.w / 100) / (size.x || 1), (fp.d / 100) / (size.z || 1));
-    var maxH = (hintHcm ? hintHcm / 100 : 1.4) * 1.6; // Höhe nur nach oben deckeln
-    if (size.y * sc > maxH) sc = maxH / (size.y || 1);
-    if (!isFinite(sc) || sc <= 0) sc = 1;
-    obj.position.set(-ctr.x, -box.min.y, -ctr.z); // Mitte über x/z=0, Boden auf y=0
-    var wrap = new THREE.Group();
-    wrap.add(obj);
-    if (yawDeg) wrap.rotation.y += yawDeg * Math.PI / 180;
-    wrap.scale.set(sc, sc, sc);
-    return wrap;
   }
 
   /* ---------- Three.js-Grundgerüst (einmalig) ---------- */
@@ -423,22 +163,6 @@
     zoomOutBtn = document.getElementById("planner3dZoomOut");
     if (zoomInBtn) zoomInBtn.addEventListener("click", function () { zoomBy(-0.18); });
     if (zoomOutBtn) zoomOutBtn.addEventListener("click", function () { zoomBy(0.18); });
-
-    // Dev-Auswahl: Pack-Knoten für die Brustpresse live durchprobieren
-    var nodeSel = document.getElementById("planner3dGlbNode");
-    var nodeWrap = document.getElementById("planner3dNodePickWrap");
-    if (nodeSel && nodeWrap && GLB_MODELS.chestpress) {
-      GLB_NODE_CHOICES.forEach(function (n) {
-        var o = document.createElement("option");
-        o.value = n; o.textContent = n; nodeSel.appendChild(o);
-      });
-      nodeSel.value = GLB_MODELS.chestpress.node || GLB_NODE_CHOICES[0];
-      nodeWrap.hidden = false;
-      nodeSel.addEventListener("change", function () {
-        glbNodeOverride = nodeSel.value || null;
-        rebuildRoom();
-      });
-    }
 
     setupControls(renderer.domElement);
     window.addEventListener("resize", function () { if (!panel.hidden) resize(); });
@@ -577,32 +301,7 @@
       var w = Math.abs(fp.w * Math.cos(rot)) + Math.abs(fp.d * Math.sin(rot));
       var d = Math.abs(fp.w * Math.sin(rot)) + Math.abs(fp.d * Math.cos(rot));
       var hCm = EQUIP_H[it.catId] || EQUIP_H_DEFAULT;
-      var built3d = MODELS[it.catId]
-        ? MODELS[it.catId](fp, it.tier)
-        : buildBox(fp, it.tier, hCm);
-      var g;
-      var glb = GLB_MODELS[it.catId];
-      if (glb && it.catId === "chestpress" && glbNodeOverride) {
-        glb = { url: glb.url, node: glbNodeOverride, yaw: glb.yaw || 0 };
-      }
-      if (glb && typeof THREE.GLTFLoader !== "undefined" && !(glbCache[glb.url] && glbCache[glb.url].failed)) {
-        g = new THREE.Group();
-        g.add(built3d); // Platzhalter bis das GLB da ist
-        (function (holder, cfg, fpp, hh) {
-          loadGLB(cfg.url, function (obj) {
-            if (!obj || holder.parent !== roomGroup) return; // Fehler -> Platzhalter bleibt
-            if (cfg.node) {
-              var picked = findGlbNode(obj, cfg.node);
-              if (!picked) { if (window.console) console.warn("[3D] GLB-Knoten nicht gefunden:", cfg.node); return; }
-              isolateNode(obj, picked);
-            }
-            while (holder.children.length) holder.remove(holder.children[0]);
-            holder.add(fitGlb(obj, fpp, hh, cfg.yaw || 0));
-          });
-        })(g, glb, fp, hCm);
-      } else {
-        g = built3d;
-      }
+      var g = buildBox(fp, it.tier, hCm);
       g.position.set((it.x + w / 2) / 100 - cx, 0.01, (it.y + d / 2) / 100 - cz);
       g.rotation.y = -rot;
       roomGroup.add(g);

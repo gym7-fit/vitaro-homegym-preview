@@ -34,11 +34,6 @@
   background: var(--card); color: var(--text); border: 1px solid var(--line);
 }
 .planner-3d-btn:hover { border-color: var(--accent); }
-.planner-3d-nodepick { display: flex; align-items: center; gap: 6px; }
-.planner-3d-nodepick select {
-  font: inherit; font-size: .72rem; padding: 3px 6px; border-radius: 6px;
-  border: 1px solid var(--line); background: var(--card); color: var(--text);
-}
 .planner-3d-zoom { display: inline-flex; gap: 4px; }
 .planner-3d-zoom .planner-3d-btn { width: 28px; padding: 4px 0; text-align: center; }
 .planner-3d-stage { width: 100%; line-height: 0; }
