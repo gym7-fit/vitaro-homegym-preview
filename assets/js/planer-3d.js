@@ -36,7 +36,7 @@
   //  "Gym Equipment" von Low Poly Models (sketchfab.com), CC BY 4.0 — ein GLB
   //  mit mehreren Geräten; node = Name des Teilobjekts daraus.
   var GLB_MODELS = {
-    chestpress: { url: "assets/models/gym-equipment.glb", node: "Armpit_3", yaw: 0 }
+    chestpress: { url: "assets/models/gym-equipment.glb", node: "Butterfly_4", yaw: 0 }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
 
