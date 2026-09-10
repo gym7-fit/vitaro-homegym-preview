@@ -186,91 +186,102 @@
     var rub = new THREE.MeshStandardMaterial({ color: 0x0a0a0b, roughness: 1 });
     var accent = new THREE.MeshStandardMaterial({ color: tier === "premium" ? 0xb4472e : 0x4f6f4f, roughness: 0.55 });
 
-    // ---- Bodenrahmen + Füße + vordere Ausleger ----
-    tube(g, V(-0.44, 0.06, 0.42), V(0.44, 0.06, 0.42), 0.04, blk);
-    tube(g, V(-0.40, 0.06, -0.42), V(0.40, 0.06, -0.42), 0.04, blk);
-    tube(g, V(-0.44, 0.06, 0.42), V(-0.40, 0.06, -0.42), 0.04, blk);
-    tube(g, V(0.44, 0.06, 0.42), V(0.40, 0.06, -0.42), 0.04, blk);
-    tube(g, V(0, 0.06, 0.4), V(0, 0.06, -0.4), 0.036, blk);
+    // ============================================================
+    //  SITZENDE BRUSTPRESSE — Griffe VORN vor der Brust, schulter-
+    //  breit, Druck nach vorn. Kein seitliches Ausschwenken.
+    //  +Z = vorn (Blickrichtung, Griffe/Dorne), -Z = hinten.
+    // ============================================================
+
+    // ---- kompakter Bodenrahmen (kräftige Vierkant-Optik) + Füße ----
+    tube(g, V(-0.42, 0.07, 0.44), V(0.42, 0.07, 0.44), 0.052, blk);   // vorn quer
+    tube(g, V(-0.36, 0.07, -0.42), V(0.36, 0.07, -0.42), 0.052, blk); // hinten quer
+    tube(g, V(-0.42, 0.07, 0.44), V(-0.36, 0.07, -0.42), 0.052, blk); // links längs
+    tube(g, V(0.42, 0.07, 0.44), V(0.36, 0.07, -0.42), 0.052, blk);   // rechts längs
+    tube(g, V(0, 0.07, 0.42), V(0, 0.07, -0.40), 0.042, blk);         // Mittelholm
     [1, -1].forEach(function (s) {
-      tube(g, V(s * 0.30, 0.09, 0.42), V(s * 0.46, 0.09, 0.48), 0.033, blk);
+      tube(g, V(s * 0.30, 0.09, 0.44), V(s * 0.40, 0.09, 0.52), 0.038, blk); // vordere Ausleger f. Dorne
     });
-    [[-0.43, 0.40], [0.43, 0.40], [-0.37, -0.40], [0.37, -0.40]].forEach(function (f) {
-      var ft = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.17), hous);
-      ft.position.set(f[0], 0.035, f[1]); ft.castShadow = true; g.add(ft);
+    [[-0.40, 0.42], [0.40, 0.42], [-0.33, -0.38], [0.33, -0.38]].forEach(function (f) {
+      var ft = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.07, 0.18), hous);
+      ft.position.set(f[0], 0.04, f[1]); ft.castShadow = true; g.add(ft);
     });
 
-    // ---- kompakter getriangulierter Rahmen ----
-    tube(g, V(-0.30, 0.55, -0.06), V(0.30, 0.55, -0.06), 0.045, blk);          // Arm-Drehwelle (mittig, leicht hinten)
+    // ---- Hauptrahmen: kurze Pfosten -> Arm-Drehwelle, Lehnenpfosten ----
     [1, -1].forEach(function (s) {
-      tube(g, V(s * 0.30, 0.55, -0.06), V(s * 0.13, 0.10, 0.06), 0.033, blk);  // Dreieck vorn
-      tube(g, V(s * 0.30, 0.55, -0.06), V(s * 0.12, 0.10, -0.34), 0.033, blk); // Dreieck hinten
-      tube(g, V(s * 0.12, 0.08, -0.38), V(s * 0.11, 1.12, -0.22), 0.045, blk); // hinterer Lehnenpfosten
-      tube(g, V(s * 0.12, 0.09, 0.26), V(s * 0.12, 0.95, -0.16), 0.045, blk);  // Hauptdiagonale (Seitenansicht)
+      tube(g, V(s * 0.34, 0.09, 0.06), V(s * 0.36, 0.56, -0.02), 0.052, blk);  // Pfosten zur Drehwelle
+      tube(g, V(s * 0.15, 0.09, -0.34), V(s * 0.145, 1.02, -0.10), 0.052, blk);// Lehnenpfosten (~13° zurück)
+      tube(g, V(s * 0.36, 0.54, -0.02), V(s * 0.15, 0.62, -0.11), 0.036, blk); // Verband Drehwelle<->Lehne
     });
-    tube(g, V(-0.11, 1.10, -0.22), V(0.11, 1.10, -0.22), 0.033, blk);          // Kopf-Querstrebe
-    tube(g, V(0, 0.10, 0.24), V(0, 0.48, 0.15), 0.045, blk);                   // Sitzträger
-    tube(g, V(0, 0.50, 0.06), V(0, 1.02, -0.16), 0.045, blk);                  // Lehnenträger
-    tube(g, V(0.09, 0.42, 0.06), V(0.04, 0.72, -0.14), 0.018, silver);         // Assist-Feder (angedeutet)
+    tube(g, V(-0.36, 0.56, -0.02), V(0.36, 0.56, -0.02), 0.05, blk);           // Arm-Drehwelle (quer, mittig)
+    tube(g, V(-0.145, 1.00, -0.10), V(0.145, 1.00, -0.10), 0.036, blk);        // Kopf-Querstrebe
+    tube(g, V(0, 0.09, 0.22), V(0, 0.46, 0.13), 0.05, blk);                    // Sitzträger
+    tube(g, V(0.10, 0.40, -0.06), V(0.05, 0.70, -0.16), 0.016, silver);        // Assist-Feder (angedeutet)
 
-    // ---- Sitz: Gehäuse + Zahn-Rastschiene ----
-    var box = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.14, 0.30), hous);
-    box.position.set(0, 0.38, 0.14); box.castShadow = true; g.add(box);
-    var rack = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.32, 0.05), blk);
-    rack.position.set(0, 0.31, 0.0); rack.castShadow = true; g.add(rack);
+    // ---- Sitz: Gehäuse + Zahn-Rastschiene (Höhenverstellung) ----
+    var box = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.15, 0.32), hous);
+    box.position.set(0, 0.38, 0.10); box.castShadow = true; g.add(box);
+    var rack = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.34, 0.055), blk);
+    rack.position.set(0, 0.30, -0.06); rack.castShadow = true; g.add(rack);
     for (var tt = 0; tt < 9; tt++) {
-      var th = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.014, 0.055), blk);
-      th.position.set(0, 0.17 + tt * 0.034, 0.0); g.add(th);
+      var th = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.014, 0.06), blk);
+      th.position.set(0, 0.16 + tt * 0.035, -0.06); g.add(th);
     }
-    var seat = pad(0.38, 0.40, 0.08, uphol);
-    seat.rotation.x = -Math.PI / 2; seat.position.set(0, 0.475, 0.15); g.add(seat);
+    var seat = pad(0.42, 0.42, 0.09, uphol);
+    seat.rotation.x = -Math.PI / 2; seat.position.set(0, 0.475, 0.13); g.add(seat);
 
-    // ---- Rückenpolster: hoch, leichte Taille, ~15° zurück ----
+    // ---- Rückenpolster: breiter, niedriger, ~13° zurück ----
     var bs = new THREE.Shape();
-    bs.moveTo(-0.16, 0);
-    bs.quadraticCurveTo(-0.20, 0.05, -0.19, 0.18);
-    bs.quadraticCurveTo(-0.205, 0.34, -0.185, 0.5);
-    bs.quadraticCurveTo(-0.19, 0.66, -0.11, 0.76);
-    bs.quadraticCurveTo(0, 0.79, 0.11, 0.76);
-    bs.quadraticCurveTo(0.19, 0.66, 0.185, 0.5);
-    bs.quadraticCurveTo(0.205, 0.34, 0.19, 0.18);
-    bs.quadraticCurveTo(0.20, 0.05, 0.16, 0);
-    bs.quadraticCurveTo(0, -0.035, -0.16, 0);
-    var backGeo = new THREE.ExtrudeGeometry(bs, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 3, curveSegments: 12 });
-    backGeo.translate(0, 0, -0.06);
+    bs.moveTo(-0.20, 0);
+    bs.quadraticCurveTo(-0.235, 0.10, -0.225, 0.30);
+    bs.quadraticCurveTo(-0.22, 0.50, -0.165, 0.62);
+    bs.quadraticCurveTo(0, 0.68, 0.165, 0.62);
+    bs.quadraticCurveTo(0.22, 0.50, 0.225, 0.30);
+    bs.quadraticCurveTo(0.235, 0.10, 0.20, 0);
+    bs.quadraticCurveTo(0, -0.04, -0.20, 0);
+    var backGeo = new THREE.ExtrudeGeometry(bs, { depth: 0.14, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.035, bevelSegments: 3, curveSegments: 12 });
+    backGeo.translate(0, 0, -0.07);
     var back = new THREE.Mesh(backGeo, uphol);
-    back.position.set(0, 0.45, 0.03); back.rotation.x = -0.15; back.castShadow = true; g.add(back);
-    var badge = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.04, 0.02), accent);
-    badge.position.set(0, 0.56, -0.14); g.add(badge);
+    back.position.set(0, 0.52, -0.02); back.rotation.x = -0.13; back.castShadow = true; g.add(back);
+    var badge = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.045, 0.02), accent);
+    badge.position.set(0, 0.64, -0.17); g.add(badge);
 
-    // ---- Druckarme: mittiger Drehpunkt, Griff waagerecht nach vorn ----
+    // ---- Druckarme: Drehpunkt hinter der Schulter, Griff VORN ----
     [1, -1].forEach(function (s) {
-      var P = V(s * 0.30, 0.55, -0.06);
-      var H = V(s * 0.52, 0.96, 0.13);   // Griff-Anschluss (Brusthöhe, weit außen)
-      var R = V(s * 0.44, 0.18, 0.30);   // Dorn/Puffer vorn unten
-      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.11, 16), blk);
+      var P  = V(s * 0.36, 0.56, -0.02);  // Drehpunkt auf der Querwelle
+      var E  = V(s * 0.30, 0.76, 0.28);   // Armknick, nach vorn+oben
+      var G0 = V(s * 0.24, 0.72, 0.42);   // Griff unten (schulterbreit, vor der Brust)
+      var G1 = V(s * 0.255, 1.02, 0.40);  // Griff oben
+      var Ht = V(s * 0.24, 1.02, 0.24);   // waagerechtes Griff-Ende (zeigt zum Nutzer)
+      var L  = V(s * 0.40, 0.24, 0.14);   // unterer Arm -> Dornwurzel
+      var Hn = V(s * 0.40, 0.19, 0.52);   // Scheiben-Aufnahmedorn vorn
+
+      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.13, 18), blk);
       hub.rotation.z = Math.PI / 2; hub.position.copy(P); hub.castShadow = true; g.add(hub);
-      var ring = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.02, 16), accent);
+      var ring = new THREE.Mesh(new THREE.CylinderGeometry(0.063, 0.063, 0.022, 18), accent);
       ring.rotation.z = Math.PI / 2; ring.position.copy(P); g.add(ring);
-      beam(g, P, H, 0.085, 0.05, blk);   // oberer Armbalken zum Griff
-      beam(g, P, R, 0.08, 0.05, blk);    // unterer Armbalken zum Dorn
-      // waagerechter Griff nach vorn (+Z) mit Silberkappen
-      tube(g, V(s * 0.52, 0.90, 0.13), V(s * 0.52, 0.96, 0.13), 0.026, blk); // kurzer Steg
-      tube(g, V(s * 0.52, 0.96, 0.02), V(s * 0.52, 0.96, 0.32), 0.02, rub);
-      capZ(g, s * 0.52, 0.96, 0.0, 0.024, 0.035, silver);
-      capZ(g, s * 0.52, 0.96, 0.34, 0.024, 0.035, silver);
+
+      beam(g, P, E, 0.09, 0.06, blk);     // oberer Armabschnitt
+      beam(g, E, G0, 0.07, 0.05, blk);    // vorn zum Griff
+      beam(g, P, L, 0.08, 0.055, blk);    // unterer Armabschnitt zum Dorn
+
+      // D-Griff: senkrechter Holm + waagerechter Steg mit Silberkappe
+      tube(g, G0, G1, 0.022, rub);
+      tube(g, G1, Ht, 0.02, rub);
+      capZ(g, s * 0.24, 1.02, 0.22, 0.024, 0.035, silver);
+      joint(g, G1, 0.028, blk);
+
       // Scheiben-Aufnahmedorn nach vorn + gelbe Kappe
-      tube(g, V(s * 0.44, 0.19, 0.28), V(s * 0.44, 0.17, 0.5), 0.026, blk);
-      capZ(g, s * 0.44, 0.17, 0.51, 0.032, 0.03, yellow);
-      // gelb/schwarzer Puffer vorn + hinten
-      capZ(g, s * 0.44, 0.12, 0.40, 0.05, 0.10, rub);
-      capZ(g, s * 0.44, 0.12, 0.455, 0.053, 0.02, yellow);
-      capZ(g, s * 0.40, 0.12, -0.40, 0.045, 0.09, rub);
-      capZ(g, s * 0.40, 0.12, -0.445, 0.048, 0.018, yellow);
+      tube(g, L, Hn, 0.028, blk);
+      capZ(g, s * 0.40, 0.19, 0.53, 0.034, 0.03, yellow);
+      // gelb/schwarzer Gummipuffer vorn + hinten am Boden
+      capZ(g, s * 0.40, 0.13, 0.44, 0.05, 0.10, rub);
+      capZ(g, s * 0.40, 0.13, 0.495, 0.053, 0.02, yellow);
+      capZ(g, s * 0.34, 0.13, -0.38, 0.045, 0.09, rub);
+      capZ(g, s * 0.34, 0.13, -0.425, 0.048, 0.018, yellow);
     });
 
-    var sx = Math.max(0.82, Math.min(1.2, (fp.w / 100) / 1.28));
-    var sz = Math.max(0.82, Math.min(1.2, (fp.d / 100) / 0.98));
+    var sx = Math.max(0.85, Math.min(1.12, (fp.w / 100) / 1.30));
+    var sz = Math.max(0.85, Math.min(1.12, (fp.d / 100) / 1.00));
     g.scale.set(sx, 1, sz);
     return g;
   }
