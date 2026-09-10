@@ -229,16 +229,8 @@
     tube(g, V(-0.14, 0.56, -0.22), V(0.14, 0.56, -0.22), 0.03, blk);            // mittlere Quere
     tube(g, V(0, 0.28, -0.16), V(0, 1.10, -0.14), 0.05, blk);                   // Lehnen-Mittelträger
 
-    // ---- Drehwelle (mittlere Höhe, vorderes Drittel) ----
-    tube(g, V(-0.30, 0.60, 0.10), V(0.30, 0.60, 0.10), 0.032, blk);
-    [1, -1].forEach(function (s) {
-      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.062, 0.10, 14), blk);
-      hub.rotation.z = Math.PI / 2; hub.position.set(s * 0.30, 0.60, 0.10); hub.castShadow = true; g.add(hub);
-      tube(g, V(s * 0.28, 0.08, 0.04), V(s * 0.30, 0.58, 0.10), 0.036, blk);    // Stütze zur Welle
-    });
-
-    // ---- Sitz (orange) + Träger ----
-    tube(g, V(0, 0.08, 0.20), V(0, 0.42, 0.18), 0.045, blk);
+    // ---- Sitz (orange) + EIN Träger darunter (nichts sonst am Sitz) ----
+    tube(g, V(0, 0.08, 0.16), V(0, 0.42, 0.18), 0.045, blk);
     var seat = pad(0.36, 0.38, 0.09, padM);
     seat.rotation.x = -Math.PI / 2 + 0.05; seat.position.set(0, 0.46, 0.18); seat.castShadow = true; g.add(seat);
 
@@ -246,34 +238,44 @@
     var back = pad(0.40, 0.60, 0.10, padM);
     back.rotation.x = -0.20; back.position.set(0, 0.82, -0.08); back.castShadow = true; g.add(back);
 
-    // ---- Druckarme: je Seite ein DREIECK-Turm (aussen fast senkrecht,
-    //      innen Diagonale zum Drehpunkt), Griff waagerecht nach VORN.
-    //      Von vorne: zwei schmale Türme neben der Lehne, KEIN V. ----
+    // ---- Seitliche Kraftrahmen + Druckarme: KOMPLETT an den Seiten
+    //      (x ~ ±0.42), nichts läuft über den Sitz. Je Seite:
+    //      senkrechter Aussenholm, Diagonale zum hinteren Mast,
+    //      Drehnabe am Holm, Arm hoch-vorn zum Griff + runter-vorn
+    //      zum Scheibendorn. ----
     [1, -1].forEach(function (s) {
-      var P  = V(s * 0.26, 0.58, 0.08);   // Drehpunkt an der Welle (innen)
-      var Bo = V(s * 0.42, 0.09, 0.24);   // Turmfuß aussen
-      var T  = V(s * 0.42, 1.02, 0.30);   // Turmspitze (Griffanbindung), fast über Bo
+      var Bo = V(s * 0.42, 0.09, 0.22);   // Fuß Aussenholm
+      var T  = V(s * 0.42, 1.06, 0.24);   // Spitze Aussenholm
+      var Pv = V(s * 0.42, 0.60, 0.24);   // Drehnabe (am Holm, seitlich)
+      var Hr = V(s * 0.40, 0.34, 0.36);   // Wurzel Scheibendorn
 
-      tube(g, Bo, T, 0.05, blk);          // aeusserer Holm (fast senkrecht)
-      tube(g, P, T, 0.045, blk);          // innere Diagonale zum Drehpunkt
-      tube(g, P, Bo, 0.036, blk);         // Untergurt schließt das Dreieck
-      joint(g, P, 0.055, blk);
-      joint(g, T, 0.05, blk);
+      tube(g, Bo, T, 0.05, blk);                                  // senkrechter Aussenholm
+      tube(g, V(s * 0.42, 0.98, 0.04), V(s * 0.14, 0.50, -0.30), 0.04, blk); // Diagonale zum Mast (hinter der Lehne)
+      tube(g, Bo, V(s * 0.30, 0.07, -0.12), 0.032, blk);          // Untergurt zum Bodenrahmen
+      var hub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.12, 14), blk);
+      hub.rotation.z = Math.PI / 2; hub.position.set(s * 0.42, 0.60, 0.24); hub.castShadow = true; g.add(hub);
 
-      // Griff: waagerechter Holm nach vorn + senkrechter Handgriff
-      tube(g, V(s * 0.42, 1.00, 0.24), V(s * 0.42, 1.00, 0.56), 0.028, grip);
-      tube(g, V(s * 0.42, 0.86, 0.52), V(s * 0.42, 1.14, 0.52), 0.028, grip);
-      joint(g, V(s * 0.42, 1.00, 0.30), 0.034, blk);
-      capZ(g, s * 0.42, 1.00, 0.58, 0.032, 0.03, blk);
+      // Druckarm: von der Nabe hoch-vorn zum Griffkopf, runter-vorn zum Dorn
+      var Gb = V(s * 0.40, 0.90, 0.50);   // Griff-Basis
+      tube(g, Pv, Gb, 0.048, blk);
+      tube(g, Pv, Hr, 0.044, blk);
+      joint(g, Gb, 0.05, blk);
 
-      // Scheibendorn vorn-unten am Turm + zwei schwarze Hantelscheiben
-      tube(g, V(s * 0.40, 0.26, 0.20), V(s * 0.40, 0.24, 0.52), 0.03, blk);
-      [0.36, 0.44].forEach(function (zz) {
+      // Griffkopf oben am Arm: senkrechter Haupt-Handgriff + zwei Querholme
+      tube(g, V(s * 0.40, 0.86, 0.52), V(s * 0.40, 1.16, 0.52), 0.034, grip);   // senkrechter Griff
+      tube(g, V(s * 0.40, 1.13, 0.30), V(s * 0.40, 1.13, 0.52), 0.03, grip);    // oberer Querholm
+      tube(g, V(s * 0.40, 0.94, 0.40), V(s * 0.40, 0.94, 0.52), 0.028, grip);   // unterer Querholm
+      joint(g, V(s * 0.40, 1.16, 0.52), 0.038, blk);
+      joint(g, V(s * 0.40, 0.86, 0.52), 0.038, blk);
+
+      // Scheibendorn nach vorn + zwei schwarze Hantelscheiben
+      tube(g, Hr, V(s * 0.40, 0.30, 0.60), 0.03, blk);
+      [0.44, 0.52].forEach(function (zz) {
         var pl = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.05, 18), disc);
-        pl.rotation.z = Math.PI / 2; pl.position.set(s * 0.40, 0.25, zz);
+        pl.rotation.z = Math.PI / 2; pl.position.set(s * 0.40, 0.32, zz);
         pl.castShadow = true; g.add(pl);
       });
-      capZ(g, s * 0.40, 0.24, 0.55, 0.032, 0.03, blk);
+      capZ(g, s * 0.40, 0.30, 0.63, 0.032, 0.03, blk);
     });
 
     var sx = Math.max(0.85, Math.min(1.15, (fp.w / 100) / 1.28));
