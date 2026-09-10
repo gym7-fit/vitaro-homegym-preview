@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planer &amp; Kostenrechner — VITARO Home Gym</title>
+<meta name="description" content="Raum eintragen, Geräte von oben im Grundriss platzieren und live sehen, was Ihre Auswahl kostet — der VITARO Planer verknüpft Raumplanung und Kostenschätzung in einem Tool.">
+<link rel="canonical" href="https://vitaro-homegym.example/planer.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VITARO Home Gym">
+<meta property="og:title" content="Planer &amp; Kostenrechner — VITARO Home Gym">
+<meta property="og:description" content="Raum eintragen, Geräte von oben platzieren, live sehen was es kostet.">
+<meta property="og:url" content="https://vitaro-homegym.example/planer.html">
+<meta property="og:image" content="https://vitaro-homegym.example/assets/media/vitaro-homegym-hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23f5efe6'/%3E%3Ctext x='50' y='69' font-size='58' font-family='Arial' font-weight='900' fill='%23181410' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
+<script>
+  (function(){
+    try{
+      var stored = localStorage.getItem('vitaro-theme');
+      var theme;
+      if(stored === 'dark' || stored === 'light'){ theme = stored; }
+      else { theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }
+      document.documentElement.setAttribute('data-theme', theme);
+    }catch(e){}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=39">
+<!-- 3D-Zusatz (komplett abtrennbar): diese Zeile mit den anderen 3D-Teilen entfernen -->
+<link rel="stylesheet" href="assets/css/planer-3d.css?v=2">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "VITARO Home Gym Planer",
+  "url": "https://vitaro-homegym.example/planer.html",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "description": "Kostenloser Home-Gym-Planer: eigenen Trainingsraum im Grundriss zusammenstellen und live sehen, was Geräte von Einstiegs- bis Premiummarken kosten — inklusive Kostenaufstellung als PDF.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+  "provider": { "@type": "Organization", "name": "VITARO Home Gym", "url": "https://vitaro-homegym.example/" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-word">VITARO</span><span class="logo-sub"><span>HOME</span><span>GYMS</span></span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menü umschalten" aria-expanded="false" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <div class="nav-links">
+          <a href="leistungen.html">Leistungen</a>
+          <a href="pakete.html">Pakete &amp; Ablauf</a>
+          <a href="planer.html" class="active">Planer</a>
+          <a href="galerie.html">Galerie</a>
+          <a href="index.html#warum">Warum VITARO</a>
+          <a href="ressourcen.html">Ratgeber</a>
+          <a href="kontakt.html">Kontakt</a>
+        </div>
+        <div class="nav-cta">
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Hell-/Dunkelmodus umschalten" title="Hell-/Dunkelmodus umschalten">
+            <span class="icon-dark">&#9789;</span><span class="icon-light">&#9788;</span>
+          </button>
+          <span data-auth-slot></span>
+          <a href="kontakt.html" class="btn btn-primary">Erstgespräch anfragen</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="nav-backdrop" id="navBackdrop" onclick="closeMobileMenu()"></div>
+
+<main id="main">
+
+<section class="hero hero-sm">
+  <div class="wrap hero-content hero-inner">
+    <span class="eyebrow">Planer &amp; Kostenrechner</span>
+    <h1>Ihr Raum, von oben, mit echten Preisen.</h1>
+    <p class="lead">Raum eintragen, Geräte im Grundriss platzieren — jedes Gerät erkennbar von oben, nicht nur als Box — und rechts live sehen, was Ihre Auswahl kostet. Beide Ansichten sind ein und dasselbe Werkzeug: Was Sie im Raum platzieren, taucht sofort in der Kostenschätzung auf.</p>
+  </div>
+</section>
+
+<section id="app">
+  <div class="wrap">
+    <div class="planner-mobile-tabs" id="plannerMobileTabs">
+      <button type="button" data-view="planer" class="active">Planer</button>
+      <button type="button" data-view="kosten">Kostenrechner</button>
+    </div>
+
+    <div class="planner-app" id="plannerApp" data-mobile-view="planer">
+
+      <div class="planner-room-col">
+        <div class="planner-room-card">
+          <div class="vitaro-timer-badge" id="plannerTimerBadge" hidden></div>
+          <div class="planner-room-controls">
+            <div class="form-field">
+              <label for="roomLength">Länge (m)</label>
+              <input type="number" id="roomLength" value="4.5" min="2" max="12" step="0.1">
+            </div>
+            <div class="form-field">
+              <label for="roomWidth">Breite (m)</label>
+              <input type="number" id="roomWidth" value="3.5" min="2" max="12" step="0.1">
+            </div>
+            <label class="planner-flooring-toggle">
+              <input type="checkbox" id="flooringToggle">
+              <span>Gummiboden anzeigen</span>
+            </label>
+            <div class="planner-tier-switch" id="flooringTierSwitch" style="max-width:150px;">
+              <button type="button" data-tier="budget" class="active">Einstieg</button>
+              <button type="button" data-tier="premium">Premium</button>
+            </div>
+            <label class="planner-flooring-toggle">
+              <input type="checkbox" id="clearanceToggle" checked>
+              <span>Sicherheitsabstände anzeigen</span>
+            </label>
+            <label class="planner-flooring-toggle">
+              <input type="checkbox" id="snapToggle">
+              <span>Am Raster einrasten</span>
+            </label>
+            <span class="planner-room-area" id="plannerRoomArea">≈ 15,8 m²</span>
+          </div>
+          <p class="planner-clearance-note">Gestrichelt: empfohlener Freiraum rund ums Gerät (darf sich mit anderen Geräten/Zonen überlappen) — <b>Richtwerte aus Herstellerhandbüchern und Fitness-Planungsratgebern, keine DIN-/DGUV-Vorschrift für den Privatgebrauch</b>. Rot umrandet: Zugangsbereich zum Ein-/Aussteigen (z. B. hinter dem Laufband) — dort darf kein anderes Gerät direkt hineingestellt werden. Genaue Quelle je Gerät im Mauszeiger-Tooltip.</p>
+
+          <div class="planner-shape-panel">
+            <div class="planner-shape-panel-head">
+              <strong>Raumform &amp; Zugang</strong>
+              <button type="button" class="btn btn-ghost" id="roomShapeToggle">Grundriss anpassen</button>
+            </div>
+            <div class="planner-shape-panel-body" id="roomShapePanelBody" hidden>
+              <p class="planner-shape-hint">Eckpunkte im Grundriss ziehen (rasten auf 10&nbsp;cm bzw. 15° ein) — antippen entfernt eine Ecke wieder. Auf einer Wandmitte antippen fügt eine neue Ecke ein. Auf ein Längen-Maß tippen erlaubt die exakte Länge; die kleine Winkelzahl an der Ecke (mit gestrichelter Bezugslinie zur Waagerechten) lässt sich antippen für einen freien Winkel ohne 15°-Raster — zieht man die Ecke danach erneut, rastet sie wieder normal auf 15° ein.</p>
+              <button type="button" class="btn btn-ghost" id="roomShapeReset">Auf Rechteck zurücksetzen</button>
+            </div>
+            <div class="planner-room-controls planner-door-controls">
+              <button type="button" class="btn btn-ghost" id="addDoorBtn">+ Weitere Tür platzieren</button>
+            </div>
+            <p class="planner-shape-hint">Türen im Anpassmodus direkt an der Wand entlangziehen (am Türblatt oder am roten Schwenkbereich anfassen; rasten auf 10&nbsp;cm ein und laufen um Ecken herum). Am Tür-Maß tippen stellt die Breite ein (0,90&nbsp;m bis 2,00&nbsp;m), am Abstands-Maß den Abstand zur Wand. Eine Tür antippen wählt sie aus (bei zusätzlichen Türen erscheint ein Löschkreuz). Ab 1,5&nbsp;m Breite wird automatisch eine zweiflügelige Tür gezeichnet. Gestrichelt: Öffnungsrichtung; rot: Schwenkbereich, der freigehalten werden muss.</p>
+          </div>
+
+          <div class="planner-history-bar">
+            <span class="planner-unit-note">Alle Maße in Metern (m)</span>
+            <button type="button" class="planner-history-btn" id="planUndoBtn" title="Rückgängig" aria-label="Rückgängig" disabled>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 7 4 12l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 12h10a6 6 0 0 1 0 12h-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" class="planner-history-btn" id="planRedoBtn" title="Wiederholen" aria-label="Wiederholen" disabled>
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12H10a6 6 0 0 0 0 12h3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="planner-canvas-outer" id="plannerCanvasOuter">
+            <div class="planner-canvas" id="plannerCanvas"></div>
+          </div>
+
+          <!-- 3D-Zusatz (komplett abtrennbar, siehe assets/js/planer-3d.js) -->
+          <div class="planner-3d-wrap">
+            <button type="button" class="planner-3d-toggle" id="planner3dToggle">3D-Ansicht</button>
+            <div class="planner-3d-panel" id="planner3dPanel" hidden>
+              <div class="planner-3d-bar">
+                <label>Wandhöhe
+                  <input type="range" id="planner3dWallH" min="200" max="320" step="5" value="250">
+                  <b id="planner3dWallHVal">2,50 m</b>
+                </label>
+                <button type="button" class="planner-3d-btn" id="planner3dWalls">Wände: vorne aus</button>
+                <span class="planner-3d-zoom">
+                  <button type="button" class="planner-3d-btn" id="planner3dZoomOut" aria-label="rauszoomen">−</button>
+                  <button type="button" class="planner-3d-btn" id="planner3dZoomIn" aria-label="reinzoomen">+</button>
+                </span>
+              </div>
+              <p class="planner-3d-note">3D-Ansicht aus dem Grundriss oben. Ziehen dreht, Mausrad/Zwei-Finger oder die +/−-Knöpfe zoomen. Geräte-Detailmodelle im Aufbau (aktuell: Brustpresse), Rest als maßstäbliche Box; Höhen „ca.".</p>
+            </div>
+          </div>
+
+          <p class="planner-selected-info" id="plannerSelectedInfo" hidden></p>
+
+          <p class="planner-fit-msg" id="plannerFitMsg" hidden></p>
+
+          <div class="planner-palette" id="plannerPalette"></div>
+          <p class="planner-palette-note">Ziehen Sie ein platziertes Gerät direkt im Grundriss (oder an seiner Sicherheitszone) an eine andere Stelle — die beiden Kreis-Pfeile drehen es in 45°-Schritten nach links/rechts, das × entfernt es (Gerät zuerst antippen). Die Sicherheitszonen drehen sich dabei exakt mit, auch bei schräger Aufstellung. Größe und Form sind maßstäblich zur Raumgröße, damit Sie von oben erkennen, was wohin passt.</p>
+
+          <div class="planner-cost-group-label">Zubehör (Langhantel, Scheiben, Kurzhanteln, Kettlebells)</div>
+          <div class="planner-palette" id="plannerAccessoryPalette"></div>
+        </div>
+      </div>
+
+      <aside class="planner-cost-col vitaro-gate" id="plannerCostPanel">
+        <h3>Kostenrechner</h3>
+        <p class="source-note">Läuft automatisch mit dem Planer mit — jede Änderung links wirkt sich sofort auf die Summe aus.</p>
+
+        <div id="plannerGateInner">
+          <div class="planner-cost-group-label" style="margin-top:4px;">Paket</div>
+          <div class="planner-tier-switch" id="packageSwitch" style="max-width:100%;">
+            <button type="button" data-pkg="essential" class="active">Essential</button>
+            <button type="button" data-pkg="signature">Signature</button>
+            <button type="button" data-pkg="custom">Maßgeschneidert</button>
+          </div>
+          <p class="source-note" id="packageSuggestNote" style="margin-top:6px;"></p>
+
+          <div class="planner-cost-list" id="plannerCostList"></div>
+
+          <div class="planner-cost-breakdown" id="plannerBreakdown"></div>
+
+          <div class="planner-cost-total">
+            <span>Gesamtsumme (brutto)</span>
+            <b id="plannerTotal">0 €</b>
+          </div>
+          <p class="source-note planner-cost-note">Verkaufspreise aus unserer laufenden Marktbeobachtung deutscher Händler, Stand Sept. 2026 — keine Pauschalpreise. Versand ist nicht enthalten; die verbindliche Zahl steht im schriftlichen Angebot nach dem Vor-Ort-Termin.</p>
+          <div class="planner-cost-actions">
+            <button type="button" class="btn btn-primary" id="plannerHandover">Diese Auswahl im Erstgespräch besprechen</button>
+            <button type="button" class="btn btn-ghost" id="plannerPdf">Als PDF-Planangebot herunterladen</button>
+            <button type="button" class="btn btn-ghost" id="plannerReset">Zurücksetzen</button>
+          </div>
+        </div>
+
+        <div class="vitaro-gate-overlay" id="costGateOverlay" hidden>
+          <span class="vitaro-gate-lock">🔒</span>
+          <p id="costGateText">Kostenlos anmelden, um den Kostenrechner sichtbar zu machen.</p>
+          <button type="button" class="btn btn-primary" data-open-auth>Registrieren / Anmelden</button>
+        </div>
+      </aside>
+
+    </div>
+
+    <div class="planner-mobile-pricebar" id="plannerMobilePricebar">
+      <span>Gesamt <b id="plannerMobileTotal">–</b></span>
+      <button type="button" id="plannerMobilePricebarBtn">Kostenaufstellung ansehen</button>
+    </div>
+  </div>
+</section>
+
+<section id="hinweise">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Zur Einordnung</span>
+      <h2>Ein Planungswerkzeug, kein Angebot.</h2>
+      <p>Damit Sie wissen, wie ernst Sie welche Zahl nehmen sollten.</p>
+    </div>
+    <div class="spec-grid">
+      <div class="model-card"><h3>Geräte-Grundrisse sind Richtwerte</h3><p>Die Formen und Maße je Kategorie sind branchenübliche Planungsgrößen — bei Racks und Bänken durch Herstellerangaben gestützt, sonst eine realistische Größenordnung. Das exakte Maß Ihres Wunschgeräts nehmen wir beim Vor-Ort-Termin.</p></div>
+      <div class="model-card"><h3>Preise sind Verkaufspreise, kein Angebot</h3><p>Alle Zahlen stammen aus unserer laufenden Recherche bei deutschen Händlern und Herstellern — echte, aktuell abrufbare Preise, aber ohne Versand, Montage oder Mengenrabatt. Verbindlich wird es erst schriftlich, nach dem Vor-Ort-Termin.</p></div>
+      <div class="model-card"><h3>Zwei Stufen je Gerätekategorie</h3><p>„Einstieg" und „Premium" sind aus unserem Einkaufsdossier: pro Kategorie eine geprüfte, gut bewertete Budget-Empfehlung und eine hochwertigere Alternative — keine Zufallsauswahl, sondern recherchierte Marken.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight" style="border-bottom:none;">
+  <div class="wrap" style="text-align:center;">
+    <h2 style="max-width:640px;margin:0 auto 14px;">Aus der Skizze ein echtes Angebot machen?</h2>
+    <p style="max-width:520px;margin:0 auto 28px;">Nehmen Sie Ihre Planung mit ins kostenlose Erstgespräch — wir prüfen sie gemeinsam gegen Ihren tatsächlichen Raum.</p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="kontakt.html#contactForm" class="btn btn-primary">Kostenloses Erstgespräch anfragen</a>
+      <a href="pakete.html" class="btn btn-ghost">Pakete ansehen</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <h2>Lassen Sie uns über Ihren Raum sprechen.</h2>
+        <p>Ob Sie schon einen Raum im Kopf haben oder erst planen, wo Platz wäre — der erste Schritt ist ein kostenloses Gespräch.</p>
+        <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="kontakt.html#contactForm" class="btn btn-primary">Kontakt aufnehmen</a>
+          <a href="pakete.html" class="btn btn-ghost">Pakete ansehen</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Unternehmen</h4>
+        <a href="leistungen.html">Leistungen</a>
+        <a href="pakete.html">Pakete &amp; Ablauf</a>
+        <a href="planer.html">Planer</a>
+        <a href="galerie.html">Galerie</a>
+        <a href="index.html#warum">Warum VITARO</a>
+        <a href="ressourcen.html">Ratgeber</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <a href="kontakt.html">Kontaktformular</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Ihr privates Fitnessstudio, gut geplant.</span>
+      <div class="footer-legal">
+        <span>© 2026 VITARO Home Gym. Ein Angebot von Vitaro Gym Solutions.</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutzerklärung</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/equipment-data.js?v=5"></script>
+<script src="assets/js/equipment-icons.js?v=1"></script>
+<script src="assets/js/pricing-config.js?v=1"></script>
+<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/auth.js?v=4"></script>
+<script src="assets/js/planer.js?v=70"></script>
+<!-- 3D-Zusatz (komplett abtrennbar): diese 2 Zeilen + assets/js/planer-3d.js
+     + assets/css/planer-3d.css + der .planner-3d-wrap-Block oben entfernen. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="assets/js/planer-3d.js?v=8"></script>
+</body>
+</html>

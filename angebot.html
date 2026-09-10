@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planangebot — VITARO Home Gym</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23f5efe6'/%3E%3Ctext x='50' y='69' font-size='58' font-family='Arial' font-weight='900' fill='%23181410' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/angebot.css?v=1">
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <a href="planer.html">← Zurück zum Planer</a>
+  <div class="toolbar-actions">
+    <span id="toolbarStatus"></span>
+    <button type="button" id="printBtn" class="btn-print">Als PDF speichern / drucken</button>
+  </div>
+</div>
+
+<div id="offerRoot" hidden>
+
+<section class="page" id="page1">
+  <header class="offer-header">
+    <div class="offer-logo">VITARO <span>HOME GYMS</span></div>
+    <div class="offer-header-meta">
+      <div>Planangebot</div>
+      <div id="offerDate"></div>
+      <div id="offerNumber"></div>
+    </div>
+  </header>
+
+  <div class="offer-customer">
+    <div><span>Erstellt für</span><b id="offerCustomerName">—</b></div>
+    <div><span>Raum</span><b id="offerRoomSize">—</b></div>
+    <div><span>Paket</span><b id="offerPackage">—</b></div>
+  </div>
+
+  <h1 class="offer-title">Ihr Grundriss</h1>
+  <div class="offer-plan-wrap">
+    <svg id="offerPlanSvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+  <div class="offer-legend">
+    <span><i class="legend-swatch" data-tier="budget"></i> Einstieg</span>
+    <span><i class="legend-swatch" data-tier="premium"></i> Premium</span>
+    <span class="offer-legend-note">Maße sind Planungsrichtwerte — verbindlich wird es nach dem Vor-Ort-Termin.</span>
+  </div>
+
+  <footer class="offer-footer">
+    <span>VITARO Home Gym — Vitaro Gym Solutions</span>
+    <span>Seite 1 / 2</span>
+  </footer>
+</section>
+
+<section class="page" id="page2">
+  <header class="offer-header offer-header-sm">
+    <div class="offer-logo">VITARO <span>HOME GYMS</span></div>
+    <div class="offer-header-meta">
+      <div>Kostenaufstellung</div>
+      <div id="offerDate2"></div>
+    </div>
+  </header>
+
+  <h1 class="offer-title">Ihre Kostenaufstellung</h1>
+
+  <table class="offer-table">
+    <thead>
+      <tr><th>Position</th><th>Marke / Modell</th><th>Stufe</th><th>Menge</th><th>Preis</th></tr>
+    </thead>
+    <tbody id="offerTableBody"></tbody>
+  </table>
+
+  <div class="offer-summary">
+    <div class="offer-summary-row"><span>Gerätesumme (inkl. MwSt., Händlerpreise)</span><b id="sumEquipment"></b></div>
+    <div class="offer-summary-row" id="rowServiceNet"><span id="serviceNetLabel"></span><b id="sumServiceNet"></b></div>
+    <div class="offer-summary-row" id="rowServiceVat"><span>zzgl. 19&nbsp;% MwSt. auf Servicepauschale</span><b id="sumServiceVat"></b></div>
+    <div class="offer-summary-row is-total"><span>Gesamtsumme (brutto)</span><b id="sumTotal"></b></div>
+  </div>
+
+  <div class="offer-package-box" id="offerPackageBox">
+    <h3 id="offerPackageTitle"></h3>
+    <p id="offerPackageTagline"></p>
+    <ul id="offerPackageIncludes"></ul>
+  </div>
+
+  <p class="offer-validity">Dieses Planangebot ist eine automatisch erstellte, indikative Kostenschätzung auf Basis Ihrer Auswahl im VITARO-Planer — kein rechtsverbindliches Angebot. Preise sind Verkaufspreise unserer laufenden Marktbeobachtung deutscher Händler zum Erstellungsdatum, ohne Versand. Die verbindliche Zahl inklusive Liefertermin steht im schriftlichen Angebot nach dem kostenlosen Vor-Ort-Termin. Gültigkeit dieser Schätzung: 14 Tage ab Erstellungsdatum.</p>
+
+  <div class="offer-signoff">
+    <div>
+      <div class="offer-signoff-line"></div>
+      <span>Ort, Datum</span>
+    </div>
+    <div>
+      <div class="offer-signoff-line"></div>
+      <span>VITARO Home Gym</span>
+    </div>
+  </div>
+
+  <footer class="offer-footer">
+    <span>Vitaro Gym Solutions — kontakt@vitaro-homegym.example</span>
+    <span>Seite 2 / 2</span>
+  </footer>
+</section>
+
+</div>
+
+<div id="offerEmpty" class="toolbar-empty no-print" hidden>
+  <p>Noch keine Planung vorhanden oder nicht angemeldet.</p>
+  <a href="planer.html" class="btn-print">Zurück zum Planer</a>
+</div>
+
+<script src="assets/js/equipment-data.js?v=5"></script>
+<script src="assets/js/equipment-icons.js?v=1"></script>
+<script src="assets/js/pricing-config.js?v=1"></script>
+<script src="assets/js/auth.js?v=4"></script>
+<script src="assets/js/angebot.js?v=1"></script>
+</body>
+</html>

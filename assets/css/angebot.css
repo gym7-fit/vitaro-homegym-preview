@@ -1,0 +1,110 @@
+/* ---------- VITARO PLANANGEBOT (Druck-/PDF-Ansicht) ----------
+   Bewusst eigenständig von style.css: das hier ist kein Marketing-Screen,
+   sondern ein Dokument. Zwei A4-Seiten, exakt für window.print() -> "Als
+   PDF speichern" gebaut - jeder Browser kann das nativ, ganz ohne
+   client-seitige PDF-Bibliothek. */
+:root{
+  --paper:#fffdf9; --ink:#211c15; --ink-dim:#6e6353;
+  --brass:#8a6a2c; --line:#e4dcc9;
+  --tier-budget:#4f7a52; --tier-premium:#a1512f;
+  --bg-screen:#e7e1d2;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;background:var(--bg-screen);color:var(--ink);
+  font-family:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;margin:0;}
+
+.toolbar{
+  position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;
+  padding:14px 28px;background:var(--ink);color:#fff;font-size:.9rem;
+}
+.toolbar a{color:#fff;text-decoration:none;font-weight:600;}
+.toolbar a:hover{text-decoration:underline;}
+.toolbar-actions{display:flex;align-items:center;gap:16px;}
+#toolbarStatus{font-size:.8rem;color:#c9c2ae;}
+.btn-print{
+  background:var(--brass);color:#fff;border:none;padding:10px 20px;border-radius:4px;
+  font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;
+}
+.toolbar-empty{max-width:480px;margin:80px auto;text-align:center;}
+.toolbar-empty p{margin-bottom:20px;}
+.toolbar-empty a{display:inline-block;}
+
+.page{
+  width:210mm;min-height:297mm;margin:28px auto;background:var(--paper);
+  padding:16mm 16mm 14mm;box-shadow:0 10px 40px rgba(0,0,0,.18);
+  display:flex;flex-direction:column;
+}
+
+.offer-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--ink);padding-bottom:14px;}
+.offer-header-sm{padding-bottom:10px;margin-bottom:6px;}
+.offer-logo{font-family:'Playfair Display',serif;font-weight:700;font-size:1.5rem;letter-spacing:.02em;}
+.offer-logo span{display:block;font-family:'Inter',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:.22em;color:var(--ink-dim);margin-top:2px;}
+.offer-header-meta{text-align:right;font-size:.8rem;color:var(--ink-dim);line-height:1.6;}
+.offer-header-meta div:first-child{font-weight:700;color:var(--ink);font-size:.95rem;}
+
+.offer-customer{display:flex;gap:36px;margin:22px 0 18px;padding:14px 0;border-bottom:1px solid var(--line);}
+.offer-customer div{display:flex;flex-direction:column;gap:3px;}
+.offer-customer span{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-dim);}
+.offer-customer b{font-size:.95rem;}
+
+.offer-title{font-size:1.3rem;margin-bottom:14px;}
+
+.offer-plan-wrap{
+  border:1.5px solid var(--ink);border-radius:2px;background:#fbfaf6;
+  aspect-ratio:1.35;display:flex;align-items:center;justify-content:center;padding:10px;
+}
+.offer-plan-wrap svg{width:100%;height:100%;}
+
+.offer-legend{display:flex;gap:22px;align-items:center;margin-top:12px;font-size:.78rem;color:var(--ink-dim);flex-wrap:wrap;}
+.legend-swatch{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px;}
+.legend-swatch[data-tier="budget"]{background:var(--tier-budget);}
+.legend-swatch[data-tier="premium"]{background:var(--tier-premium);}
+.offer-legend-note{margin-left:auto;font-style:italic;}
+
+.offer-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:6px;}
+.offer-table th{
+  text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);
+  padding:8px 8px;border-bottom:2px solid var(--ink);
+}
+.offer-table td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+.offer-table td:last-child, .offer-table th:last-child{text-align:right;font-variant-numeric:tabular-nums;}
+.offer-table td:nth-child(4){text-align:center;}
+.offer-table .row-tier{display:inline-block;font-size:.66rem;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:9px;color:#fff;}
+.offer-table .row-tier[data-tier="budget"]{background:var(--tier-budget);}
+.offer-table .row-tier[data-tier="premium"]{background:var(--tier-premium);}
+.offer-table .row-group td{background:#f4f0e4;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);}
+
+.offer-summary{margin-top:18px;padding-top:8px;border-top:2px solid var(--ink);max-width:420px;margin-left:auto;}
+.offer-summary-row{display:flex;justify-content:space-between;gap:20px;padding:6px 0;font-size:.85rem;color:var(--ink-dim);}
+.offer-summary-row b{color:var(--ink);font-variant-numeric:tabular-nums;}
+.offer-summary-row.is-total{border-top:1.5px solid var(--ink);margin-top:6px;padding-top:10px;font-size:1.05rem;color:var(--ink);font-weight:700;}
+
+.offer-package-box{background:#f4f0e4;border-left:3px solid var(--brass);padding:14px 18px;margin-top:24px;}
+.offer-package-box h3{font-size:1rem;margin-bottom:4px;}
+.offer-package-box p{font-size:.82rem;color:var(--ink-dim);margin:0 0 8px;}
+.offer-package-box ul{margin:0;padding-left:18px;font-size:.8rem;color:var(--ink-dim);}
+.offer-package-box li{margin-bottom:3px;}
+
+.offer-validity{font-size:.68rem;color:var(--ink-dim);margin-top:22px;line-height:1.6;}
+
+.offer-signoff{display:flex;gap:60px;margin-top:40px;}
+.offer-signoff div{flex:1;text-align:center;font-size:.72rem;color:var(--ink-dim);}
+.offer-signoff-line{border-bottom:1px solid var(--ink-dim);height:38px;}
+
+.offer-footer{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:.66rem;color:var(--ink-dim);}
+
+@media print{
+  .no-print{display:none !important;}
+  body{background:var(--paper);}
+  .page{box-shadow:none;margin:0;width:auto;min-height:0;page-break-after:always;}
+  .page:last-child{page-break-after:auto;}
+  @page{size:A4;margin:0;}
+}
+@media (max-width:860px){
+  .page{width:100%;padding:8mm;}
+  .offer-customer{flex-wrap:wrap;gap:16px;}
+}
