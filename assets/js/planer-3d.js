@@ -33,8 +33,10 @@
   // Gerätegrundfläche skaliert. Fehlt die Datei (oder GLTFLoader), greift
   // lautlos das gebaute Modell bzw. die Box. yaw = Zusatzdrehung in Grad,
   // falls das Modell nicht nach vorn (+Z) schaut.
+  //  "Gym Equipment" von Low Poly Models (sketchfab.com), CC BY 4.0 — ein GLB
+  //  mit mehreren Geräten; node = Name des Teilobjekts daraus.
   var GLB_MODELS = {
-    chestpress: { url: "assets/models/chestpress.glb", yaw: 0 }
+    chestpress: { url: "assets/models/gym-equipment.glb", node: "Butterfly_4", yaw: 0 }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
 
@@ -350,6 +352,18 @@
     list.forEach(function (fn) { fn(root ? root.clone() : null); });
   }
 
+  // reduziert eine Mehr-Geräte-Szene auf genau einen benannten Knoten,
+  // behält dabei die Transformationen aller Vorfahren.
+  function isolateNode(root, keep) {
+    var path = [];
+    for (var p = keep; p && p !== root; p = p.parent) path.unshift(p);
+    var parent = root;
+    path.forEach(function (n) {
+      parent.children.slice().forEach(function (c) { if (c !== n) parent.remove(c); });
+      parent = n;
+    });
+  }
+
   // skaliert/zentriert ein geladenes Modell auf die Gerätegrundfläche (m),
   // Boden auf y=0, Mitte über dem Ursprung — passend zur Item-Platzierung.
   function fitGlb(obj, fp, hintHcm, yawDeg) {
@@ -357,7 +371,8 @@
     var size = box.getSize(new THREE.Vector3());
     var ctr = box.getCenter(new THREE.Vector3());
     var sc = Math.min((fp.w / 100) / (size.x || 1), (fp.d / 100) / (size.z || 1));
-    if (hintHcm) sc = Math.min(sc, (hintHcm / 100) / (size.y || 1) * 1.15);
+    var maxH = (hintHcm ? hintHcm / 100 : 1.4) * 1.6; // Höhe nur nach oben deckeln
+    if (size.y * sc > maxH) sc = maxH / (size.y || 1);
     if (!isFinite(sc) || sc <= 0) sc = 1;
     obj.position.set(-ctr.x, -box.min.y, -ctr.z); // Mitte über x/z=0, Boden auf y=0
     var wrap = new THREE.Group();
@@ -575,6 +590,11 @@
         (function (holder, cfg, fpp, hh) {
           loadGLB(cfg.url, function (obj) {
             if (!obj || holder.parent !== roomGroup) return; // Fehler -> Platzhalter bleibt
+            if (cfg.node) {
+              var picked = obj.getObjectByName(cfg.node);
+              if (!picked) return;
+              isolateNode(obj, picked);
+            }
             while (holder.children.length) holder.remove(holder.children[0]);
             holder.add(fitGlb(obj, fpp, hh, cfg.yaw || 0));
           });

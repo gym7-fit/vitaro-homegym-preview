@@ -3,6 +3,20 @@
 Dieser Ordner gehört zum **abtrennbaren 3D-Planer** (`assets/js/planer-3d.js`).
 Wird der 3D-Planer entfernt, kann dieser Ordner mit weg.
 
+## Aktuell im Einsatz
+
+`gym-equipment.glb` — Pack **„Gym Equipment" von Low Poly Models**
+(sketchfab.com/LowPolyModelsWorld), Lizenz **CC BY 4.0**. Enthält 12 Geräte
+als benannte Knoten; `GLB_MODELS` wählt per `node` das passende Teilobjekt:
+
+```
+Bench press_0 · Treadmill_1 · Bench press-up_2 · Armpit_3 · Butterfly_4 ·
+Bench press-dn_5 · Shoulder_6 · Parallel_7 · Arc Bench_8 · Dumbbell stand_9 ·
+Hulter stand_10 · Feetpress_11
+```
+
+Attribution steht in `planer.html` in der 3D-Panel-Notiz (CC-BY-Pflicht).
+
 ## Wie es funktioniert
 
 `planer-3d.js` hat oben eine Zuordnung:
