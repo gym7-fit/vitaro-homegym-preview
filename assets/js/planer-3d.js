@@ -352,6 +352,18 @@
     list.forEach(function (fn) { fn(root ? root.clone() : null); });
   }
 
+  // findet einen Knoten per Name — GLTFLoader ersetzt Leerzeichen im Namen
+  // durch "_" (sanitizeNodeName), Originalname liegt in userData.name.
+  function findGlbNode(root, name) {
+    var san = String(name).replace(/\s+/g, "_");
+    var hit = null;
+    root.traverse(function (o) {
+      if (hit) return;
+      if (o.name === name || o.name === san || (o.userData && o.userData.name === name)) hit = o;
+    });
+    return hit;
+  }
+
   // reduziert eine Mehr-Geräte-Szene auf genau einen benannten Knoten,
   // behält dabei die Transformationen aller Vorfahren.
   function isolateNode(root, keep) {
@@ -591,8 +603,8 @@
           loadGLB(cfg.url, function (obj) {
             if (!obj || holder.parent !== roomGroup) return; // Fehler -> Platzhalter bleibt
             if (cfg.node) {
-              var picked = obj.getObjectByName(cfg.node);
-              if (!picked) return;
+              var picked = findGlbNode(obj, cfg.node);
+              if (!picked) { if (window.console) console.warn("[3D] GLB-Knoten nicht gefunden:", cfg.node); return; }
               isolateNode(obj, picked);
             }
             while (holder.children.length) holder.remove(holder.children[0]);
