@@ -36,9 +36,16 @@
   //  "Gym Equipment" von Low Poly Models (sketchfab.com), CC BY 4.0 — ein GLB
   //  mit mehreren Geräten; node = Name des Teilobjekts daraus.
   var GLB_MODELS = {
-    chestpress: { url: "assets/models/gym-equipment.glb", node: "Bench press_0", yaw: 0 }
+    chestpress: { url: "assets/models/gym-equipment.glb", node: "Parallel_7", yaw: 0 }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
+  // Alle Geräte-Knoten im Pack — für die Live-Auswahl im 3D-Panel.
+  var GLB_NODE_CHOICES = [
+    "Bench press_0", "Treadmill_1", "Bench press-up_2", "Armpit_3", "Butterfly_4",
+    "Bench press-dn_5", "Shoulder_6", "Parallel_7", "Arc Bench_8",
+    "Dumbbell stand_9", "Hulter stand_10", "Feetpress_11"
+  ];
+  var glbNodeOverride = null; // vom Panel gesetzt, überschreibt GLB_MODELS.chestpress.node
 
   var toggleBtn, panel, heightInput, heightLabel, wallBtn, zoomInBtn, zoomOutBtn;
   var renderer, scene, camera, roomGroup, wallEdges = [], raf = null, built = false;
@@ -454,6 +461,22 @@
     if (zoomInBtn) zoomInBtn.addEventListener("click", function () { zoomBy(-0.18); });
     if (zoomOutBtn) zoomOutBtn.addEventListener("click", function () { zoomBy(0.18); });
 
+    // Dev-Auswahl: Pack-Knoten für die Brustpresse live durchprobieren
+    var nodeSel = document.getElementById("planner3dGlbNode");
+    var nodeWrap = document.getElementById("planner3dNodePickWrap");
+    if (nodeSel && nodeWrap && GLB_MODELS.chestpress) {
+      GLB_NODE_CHOICES.forEach(function (n) {
+        var o = document.createElement("option");
+        o.value = n; o.textContent = n; nodeSel.appendChild(o);
+      });
+      nodeSel.value = GLB_MODELS.chestpress.node || GLB_NODE_CHOICES[0];
+      nodeWrap.hidden = false;
+      nodeSel.addEventListener("change", function () {
+        glbNodeOverride = nodeSel.value || null;
+        rebuildRoom();
+      });
+    }
+
     setupControls(renderer.domElement);
     window.addEventListener("resize", function () { if (!panel.hidden) resize(); });
   }
@@ -596,6 +619,9 @@
         : buildBox(fp, it.tier, hCm);
       var g;
       var glb = GLB_MODELS[it.catId];
+      if (glb && it.catId === "chestpress" && glbNodeOverride) {
+        glb = { url: glb.url, node: glbNodeOverride, yaw: glb.yaw || 0 };
+      }
       if (glb && typeof THREE.GLTFLoader !== "undefined" && !(glbCache[glb.url] && glbCache[glb.url].failed)) {
         g = new THREE.Group();
         g.add(built3d); // Platzhalter bis das GLB da ist
