@@ -28,6 +28,16 @@
   };
   var EQUIP_H_DEFAULT = 120;
 
+  // Optionale echte 3D-Modelle (GLB/glTF). Liegt die Datei im Repo, wird sie
+  // automatisch statt der gebauten Geometrie geladen und maßstäblich auf die
+  // Gerätegrundfläche skaliert. Fehlt die Datei (oder GLTFLoader), greift
+  // lautlos das gebaute Modell bzw. die Box. yaw = Zusatzdrehung in Grad,
+  // falls das Modell nicht nach vorn (+Z) schaut.
+  var GLB_MODELS = {
+    chestpress: { url: "assets/models/chestpress.glb", yaw: 0 }
+  };
+  var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
+
   var toggleBtn, panel, heightInput, heightLabel, wallBtn, zoomInBtn, zoomOutBtn;
   var renderer, scene, camera, roomGroup, wallEdges = [], raf = null, built = false;
   var target, theta = Math.PI * 0.72, phi = Math.PI * 0.34, radius = 9, radiusMin = 2.2, radiusMax = 40;
@@ -212,8 +222,8 @@
     beam(g, V(-0.28, 0.10, -0.41), V(0.28, 0.10, -0.41), 0.11, 0.08, blk);          // hintere Quere
     [[-0.37, 0.50], [0.37, 0.50], [-0.35, -0.42], [0.35, -0.42]].forEach(function (f) {
       tube(g, V(f[0] * 0.78, 0.10, f[1] * 0.96), V(f[0], 0.08, f[1]), 0.03, blk);   // Ausleger zum Fuss
-      var ft = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.10, 0.22), hous);
-      ft.position.set(f[0], 0.05, f[1]); ft.castShadow = true; g.add(ft);
+      var ft = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.07, 0.15), hous);
+      ft.position.set(f[0], 0.035, f[1]); ft.castShadow = true; g.add(ft);
     });
 
     // ---- Hinterer Lehnenmast (A-Frame, Flachstahl, ~11° zurück) ----
@@ -260,9 +270,9 @@
     var seat = pad(0.40, 0.42, 0.09, uphol);
     seat.rotation.x = -Math.PI / 2 + 0.05; seat.position.set(0, 0.475, 0.17); g.add(seat);
 
-    // ---- Rückenpolster: hoch, flach, ~13° zurück ----
-    var back = pad(0.40, 0.90, 0.13, uphol);
-    back.rotation.x = -0.22; back.position.set(0, 0.96, -0.05); back.castShadow = true; g.add(back);
+    // ---- Rückenpolster: hoch, flach (dünn), ~13° zurück ----
+    var back = pad(0.42, 0.80, 0.09, uphol);
+    back.rotation.x = -0.22; back.position.set(0, 0.90, -0.06); back.castShadow = true; g.add(back);
     [1, -1].forEach(function (s) {
       var bd = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 0.05), accent);
       bd.position.set(s * 0.20, 0.86, -0.10); g.add(bd);                             // Marken-Akzent am Mast
@@ -303,6 +313,59 @@
   }
 
   var MODELS = { chestpress: buildChestPress };
+
+  /* ---------- optionale GLB/glTF-Modelle ---------- */
+  function makeGltfLoader() {
+    var loader = new THREE.GLTFLoader();
+    if (typeof THREE.DRACOLoader !== "undefined") {
+      var d = new THREE.DRACOLoader();
+      d.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/");
+      loader.setDRACOLoader(d);
+    }
+    return loader;
+  }
+
+  // lädt eine GLB-Datei einmalig, ruft cb(clone) bzw. cb(null) bei Fehler.
+  function loadGLB(url, cb) {
+    var c = glbCache[url];
+    // Callback immer asynchron, damit der Platzhalter sicher schon im Baum hängt.
+    if (c && c.obj) { var hit = c.obj.clone(); setTimeout(function () { cb(hit); }, 0); return; }
+    if (c && c.failed) { setTimeout(function () { cb(null); }, 0); return; }
+    if (c && c.pending) { c.pending.push(cb); return; }
+    if (typeof THREE === "undefined" || typeof THREE.GLTFLoader === "undefined") {
+      glbCache[url] = { failed: true }; setTimeout(function () { cb(null); }, 0); return;
+    }
+    glbCache[url] = c = { pending: [cb] };
+    makeGltfLoader().load(url, function (gltf) {
+      var root = gltf.scene || (gltf.scenes && gltf.scenes[0]);
+      if (!root) { finishGLB(url, null); return; }
+      root.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      c.obj = root;
+      finishGLB(url, root);
+    }, undefined, function () { c.failed = true; finishGLB(url, null); });
+  }
+  function finishGLB(url, root) {
+    var c = glbCache[url]; if (!c) return;
+    var list = c.pending || []; c.pending = null;
+    list.forEach(function (fn) { fn(root ? root.clone() : null); });
+  }
+
+  // skaliert/zentriert ein geladenes Modell auf die Gerätegrundfläche (m),
+  // Boden auf y=0, Mitte über dem Ursprung — passend zur Item-Platzierung.
+  function fitGlb(obj, fp, hintHcm, yawDeg) {
+    var box = new THREE.Box3().setFromObject(obj);
+    var size = box.getSize(new THREE.Vector3());
+    var ctr = box.getCenter(new THREE.Vector3());
+    var sc = Math.min((fp.w / 100) / (size.x || 1), (fp.d / 100) / (size.z || 1));
+    if (hintHcm) sc = Math.min(sc, (hintHcm / 100) / (size.y || 1) * 1.15);
+    if (!isFinite(sc) || sc <= 0) sc = 1;
+    obj.position.set(-ctr.x, -box.min.y, -ctr.z); // Mitte über x/z=0, Boden auf y=0
+    var wrap = new THREE.Group();
+    wrap.add(obj);
+    if (yawDeg) wrap.rotation.y += yawDeg * Math.PI / 180;
+    wrap.scale.set(sc, sc, sc);
+    return wrap;
+  }
 
   /* ---------- Three.js-Grundgerüst (einmalig) ---------- */
   function buildOnce() {
@@ -500,9 +563,25 @@
       var rot = ((it.rot || 0) * Math.PI) / 180;
       var w = Math.abs(fp.w * Math.cos(rot)) + Math.abs(fp.d * Math.sin(rot));
       var d = Math.abs(fp.w * Math.sin(rot)) + Math.abs(fp.d * Math.cos(rot));
-      var g = MODELS[it.catId]
+      var hCm = EQUIP_H[it.catId] || EQUIP_H_DEFAULT;
+      var built3d = MODELS[it.catId]
         ? MODELS[it.catId](fp, it.tier)
-        : buildBox(fp, it.tier, EQUIP_H[it.catId] || EQUIP_H_DEFAULT);
+        : buildBox(fp, it.tier, hCm);
+      var g;
+      var glb = GLB_MODELS[it.catId];
+      if (glb && typeof THREE.GLTFLoader !== "undefined" && !(glbCache[glb.url] && glbCache[glb.url].failed)) {
+        g = new THREE.Group();
+        g.add(built3d); // Platzhalter bis das GLB da ist
+        (function (holder, cfg, fpp, hh) {
+          loadGLB(cfg.url, function (obj) {
+            if (!obj || holder.parent !== roomGroup) return; // Fehler -> Platzhalter bleibt
+            while (holder.children.length) holder.remove(holder.children[0]);
+            holder.add(fitGlb(obj, fpp, hh, cfg.yaw || 0));
+          });
+        })(g, glb, fp, hCm);
+      } else {
+        g = built3d;
+      }
       g.position.set((it.x + w / 2) / 100 - cx, 0.01, (it.y + d / 2) / 100 - cz);
       g.rotation.y = -rot;
       roomGroup.add(g);
