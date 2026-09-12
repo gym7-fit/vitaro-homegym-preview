@@ -70,7 +70,9 @@
       return {
         shape: st.room.shape,
         doors: Array.isArray(st.room.doors) ? st.room.doors : [],
-        items: Array.isArray(st.items) ? st.items : []
+        items: Array.isArray(st.items) ? st.items : [],
+        accessories: Array.isArray(st.accessories) ? st.accessories : [],
+        flooring: st.flooring && st.flooring.included ? st.flooring : null
       };
     }
     var lEl = document.getElementById("roomLength"), bEl = document.getElementById("roomWidth");
@@ -79,7 +81,7 @@
     return {
       shape: [{ x: 0, y: 0 }, { x: L, y: 0 }, { x: L, y: B }, { x: 0, y: B }],
       doors: [{ edge: 2, pos: Math.max(10, L - 20 - 90), width: 90, hinge: "end" }],
-      items: []
+      items: [], accessories: [], flooring: null
     };
   }
   function byId(catId) {
@@ -262,7 +264,7 @@
       });
       // Oak-Klimmzugstange oben
       cyl(g, 0.022, 0.5, M(0xc79a5b, 0.7, 0), 0, H + 0.02, 0.16, "x");
-      return place(g, 0.4, 0.3, fp);
+      return place(g, 0.4, 0.2, fp);
     }
     // Budget: freistehender Doppelturm-Funktionstrainer, schwarz
     var rw = 1.5, rd = 1.0, HT = 2.1;
@@ -284,7 +286,7 @@
   function buildChestPress(fp, tier) {
     var g = new THREE.Group(), c = mats();
     var prem = tier === "premium";
-    var rw = prem ? 1.45 : 1.28, rd = prem ? 1.5 : 0.98, H = prem ? 1.63 : 1.25;
+    var rw = prem ? 1.45 : 1.28, rd = prem ? 1.05 : 0.98, H = prem ? 1.63 : 1.25;
     var frame = prem ? c.blk : c.blk, accent = prem ? c.red : c.yellow;
     // Bodenrahmen
     [-1, 1].forEach(function (s) {
@@ -327,18 +329,18 @@
   function buildLegPress(fp, tier) {
     var g = new THREE.Group(), c = mats();
     if (tier === "premium") {
-      // HS SE Seated Leg Press: liegend, schwarz+rot, Gewichtsblock
-      var rw = 1.02, rd = 2.01, H = 1.35;
-      tube(g, V(-rw / 2 + 0.08, 0.08, rd / 2 - 0.1), V(-rw / 2 + 0.08, 0.08, -rd / 2 + 0.1), 0.05, c.blk);
-      tube(g, V(rw / 2 - 0.08, 0.08, rd / 2 - 0.1), V(rw / 2 - 0.08, 0.08, -rd / 2 + 0.1), 0.05, c.blk);
-      box(g, 0.5, 0.1, 0.5, c.pad, 0, 0.5, -rd / 2 + 0.42, -0.15);   // Sitz
-      box(g, 0.5, 0.12, 0.62, c.pad, 0, 0.92, -rd / 2 + 0.18, -0.35); // Rückenlehne
-      box(g, 0.56, 0.12, 0.5, c.pad, 0, 0.72, rd / 2 - 0.5, 0.5);     // Fußplatte schräg
-      tube(g, V(-0.28, 0.5, -rd / 2 + 0.3), V(-0.34, 0.75, rd / 2 - 0.5), 0.05, c.red); // Hebel
-      tube(g, V(0.28, 0.5, -rd / 2 + 0.3), V(0.34, 0.75, rd / 2 - 0.5), 0.05, c.red);
-      box(g, 0.32, 1.05, 0.3, c.grey, 0, 0.6, -rd / 2 + 0.02);        // Gewichtsblock
-      plateStack(g, 0, 0.6, -rd / 2 + 0.02, "y", 15, 0.14, 0.03, c.iron);
-      return place(g, rw, rd, fp);
+      // HS SE Seated Leg Press: liegend, schwarz+rot, Längsachse X (Sitz −X, Fußplatte +X)
+      var rl = 2.01, rw = 1.02, H = 1.35;
+      tube(g, V(rl / 2 - 0.1, 0.08, -rw / 2 + 0.08), V(-rl / 2 + 0.1, 0.08, -rw / 2 + 0.08), 0.05, c.blk);
+      tube(g, V(rl / 2 - 0.1, 0.08, rw / 2 - 0.08), V(-rl / 2 + 0.1, 0.08, rw / 2 - 0.08), 0.05, c.blk);
+      box(g, 0.5, 0.1, 0.5, c.pad, -rl / 2 + 0.42, 0.5, 0, 0, 0, -0.15);    // Sitz
+      box(g, 0.62, 0.12, 0.5, c.pad, -rl / 2 + 0.18, 0.92, 0, 0, 0, -0.35); // Rückenlehne
+      box(g, 0.5, 0.12, 0.56, c.pad, rl / 2 - 0.5, 0.72, 0, 0, 0, 0.5);     // Fußplatte schräg
+      tube(g, V(-rl / 2 + 0.3, 0.5, -0.28), V(rl / 2 - 0.5, 0.75, -0.34), 0.05, c.red); // Hebel
+      tube(g, V(-rl / 2 + 0.3, 0.5, 0.28), V(rl / 2 - 0.5, 0.75, 0.34), 0.05, c.red);
+      box(g, 0.3, 1.05, 0.32, c.grey, -rl / 2 + 0.02, 0.6, 0);              // Gewichtsblock
+      plateStack(g, -rl / 2 + 0.02, 0.6, 0, "y", 15, 0.14, 0.03, c.iron);
+      return place(g, rl, rw, fp);
     }
     // Taurus IFP1613 vertikale Beinpresse: 121 x 165 x 141
     var RW = 1.21, RD = 1.65, HH = 1.41;
@@ -382,102 +384,102 @@
     return place(g, rw, rd, fp);
   }
 
-  /* ---- Laufband ---- */
+  /* ---- Laufband ---- (Laufrichtung/Länge immer entlang X, Konsole an +X) */
   function buildTreadmill(fp, tier) {
     var g = new THREE.Group(), c = mats();
     if (tier === "premium") {
-      // NOHRD Sprintbok: gebogenes Holz-Curve, 86 x 180 x 170
-      var rw = 0.86, rd = 1.8;
+      // NOHRD Sprintbok: gebogenes Holz-Curve, L180 x B86 x H170
+      var rl = 1.8, rw = 0.86;
       [-1, 1].forEach(function (s) {
         var pts = [];
         for (var i = 0; i <= 10; i++) {
-          var t = i / 10, zz = -rd / 2 + t * rd;
+          var t = i / 10, xx = -rl / 2 + t * rl;
           var yy = 0.16 + Math.pow((t - 0.5) * 2, 2) * 0.5;   // U-Kurve
-          pts.push(V(s * (rw / 2 - 0.03), yy, zz));
+          pts.push(V(xx, yy, s * (rw / 2 - 0.03)));
         }
         var geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 20, 0.05, 8, false);
         var m = new THREE.Mesh(geo, c.wood); m.castShadow = true; g.add(m);
       });
       for (var k = 0; k <= 18; k++) {
-        var t2 = k / 18, z2 = -rd / 2 + 0.1 + t2 * (rd - 0.2);
+        var t2 = k / 18, x2 = -rl / 2 + 0.1 + t2 * (rl - 0.2);
         var y2 = 0.18 + Math.pow((t2 - 0.5) * 2, 2) * 0.42;
-        box(g, rw - 0.14, 0.02, 0.06, c.dark, 0, y2, z2, (t2 - 0.5) * 1.1);
+        box(g, 0.06, 0.02, rw - 0.14, c.dark, x2, y2, 0, 0, 0, (t2 - 0.5) * 1.1);
       }
-      box(g, rw - 0.1, 0.06, 0.1, c.wood, 0, 0.95, -rd / 2 + 0.06);   // hintere Griffquere
-      return place(g, rw, rd, fp);
+      box(g, 0.1, 0.06, rw - 0.1, c.wood, rl / 2 - 0.06, 0.95, 0);   // vordere Griffquere (+X)
+      return place(g, rl, rw, fp);
     }
-    // cardiostrong TX50: 188 x 89 x 147, schwarz + Konsole
-    var RW = 0.89, RD = 1.88, H = 1.47;
-    box(g, RW, 0.12, RD * 0.72, c.blk, 0, 0.1, RD * 0.1);              // Deck-Basis
-    box(g, RW - 0.06, 0.04, RD * 0.62, c.dark, 0, 0.17, RD * 0.12);    // Lauffläche
+    // cardiostrong TX50: L188 x B89 x H147, schwarz + Konsole an +X
+    var RL = 1.88, RW = 0.89, H = 1.47;
+    box(g, RL * 0.62, 0.12, RW, c.blk, -RL * 0.06, 0.1, 0);                // Deck-Basis
+    box(g, RL * 0.54, 0.04, RW - 0.06, c.dark, -RL * 0.08, 0.17, 0);       // Lauffläche
     [-1, 1].forEach(function (s) {
-      box(g, 0.09, 0.28, RD * 0.6, c.grey, s * (RW / 2 - 0.05), 0.28, RD * 0.12);  // Seitenholme
-      tube(g, V(s * (RW / 2 - 0.06), 0.3, -RD / 2 + 0.35), V(s * (RW / 2 - 0.06), H - 0.25, -RD / 2 + 0.25), 0.03, c.blk);
-      tube(g, V(s * (RW / 2 - 0.06), H - 0.4, -RD / 2 + 0.28), V(s * (RW / 2 - 0.06), H - 0.42, -RD / 2 + 0.05), 0.024, c.blk); // Haltegriff
+      box(g, RL * 0.5, 0.28, 0.09, c.grey, -RL * 0.08, 0.28, s * (RW / 2 - 0.05));  // Seitenholme
+      tube(g, V(RL / 2 - 0.4, 0.3, s * (RW / 2 - 0.06)), V(RL / 2 - 0.3, H - 0.25, s * (RW / 2 - 0.06)), 0.03, c.blk);
+      tube(g, V(RL / 2 - 0.33, H - 0.4, s * (RW / 2 - 0.06)), V(RL / 2 - 0.08, H - 0.42, s * (RW / 2 - 0.06)), 0.024, c.blk); // Haltegriff
     });
-    box(g, RW - 0.12, 0.4, 0.06, c.screen, 0, H - 0.12, -RD / 2 + 0.24);  // Touch-Konsole
-    return place(g, RW, RD, fp);
+    box(g, 0.06, 0.4, RW - 0.12, c.screen, RL / 2 - 0.24, H - 0.12, 0);   // Touch-Konsole
+    return place(g, RL, RW, fp);
   }
 
-  /* ---- Indoor-Bike / Ergometer ---- */
+  /* ---- Indoor-Bike / Ergometer ---- (Länge entlang X, Schwungrad an +X) */
   function buildBike(fp, tier) {
     var g = new THREE.Group(), c = mats();
     if (tier === "premium") {
-      // Concept2 BikeErg: 122 x 61 x 132, schwarz + graue Schwungradabdeckung
-      var rd = 1.22, H = 1.32;
-      box(g, 0.09, 0.06, 0.5, c.blk, 0, 0.05, rd / 2 - 0.3);          // Fuß hinten
-      box(g, 0.5, 0.06, 0.09, c.blk, 0, 0.05, -rd / 2 + 0.12);        // Fuß vorn (quer)
-      cyl(g, 0.22, 0.12, c.silver, 0, 0.5, -rd / 2 + 0.16, "x", 24);  // Schwungrad
-      box(g, 0.3, 0.46, 0.14, c.grey, 0, 0.5, -rd / 2 + 0.16);        // Käfig-Abdeckung
-      tube(g, V(0, 0.5, -rd / 2 + 0.16), V(0, 1.02, rd / 2 - 0.5), 0.04, c.blk);  // Oberrohr
-      tube(g, V(0, 0.1, rd / 2 - 0.34), V(0, 1.0, rd / 2 - 0.4), 0.04, c.blk);    // Sattelrohr
-      box(g, 0.26, 0.06, 0.16, c.pad, 0, 1.03, rd / 2 - 0.42);        // Sattel
-      tube(g, V(-0.16, 1.0, rd / 2 - 0.52), V(0.16, 1.0, rd / 2 - 0.52), 0.016, c.blk); // Lenker
-      box(g, 0.2, 0.28, 0.03, c.screen, 0, 1.16, rd / 2 - 0.5);       // PM5
-      cyl(g, 0.11, 0.05, c.blk, 0, 0.32, 0, "x");                     // Kurbel/Tretlager
-      return place(g, 0.61, rd, fp);
+      // Concept2 BikeErg: L122 x B61 x H132, Schwungrad vorn (+X)
+      var rl = 1.22;
+      box(g, 0.5, 0.06, 0.09, c.blk, 0, 0.05, 0);                       // Standfuß (Mitte)
+      box(g, 0.09, 0.06, 0.5, c.blk, rl / 2 - 0.16, 0.05, 0);           // Fuß vorn (unter Schwungrad)
+      cyl(g, 0.22, 0.12, c.silver, rl / 2 - 0.16, 0.5, 0, "z", 24);     // Schwungrad
+      box(g, 0.14, 0.46, 0.3, c.grey, rl / 2 - 0.16, 0.5, 0);           // Käfig-Abdeckung
+      tube(g, V(rl / 2 - 0.16, 0.5, 0), V(-rl / 2 + 0.34, 1.02, 0), 0.04, c.blk);  // Oberrohr
+      tube(g, V(-rl / 2 + 0.4, 0.1, 0), V(-rl / 2 + 0.34, 1.0, 0), 0.04, c.blk);   // Sattelrohr
+      box(g, 0.16, 0.06, 0.26, c.pad, -rl / 2 + 0.38, 1.03, 0);         // Sattel
+      tube(g, V(rl / 2 - 0.46, 1.0, -0.16), V(rl / 2 - 0.46, 1.0, 0.16), 0.016, c.blk); // Lenker
+      box(g, 0.03, 0.28, 0.2, c.screen, rl / 2 - 0.44, 1.16, 0);        // PM5
+      cyl(g, 0.11, 0.05, c.blk, 0, 0.32, 0, "z");                       // Kurbel/Tretlager
+      return place(g, rl, 0.61, fp);
     }
-    // cardiostrong IB50 Incline Bike: schwarz/weiß, aufrecht
-    var RD = 1.1, HH = 1.3;
-    box(g, 0.5, 0.07, 0.1, c.blk, 0, 0.05, -RD / 2 + 0.14);
-    box(g, 0.5, 0.07, 0.1, c.blk, 0, 0.05, RD / 2 - 0.14);
-    box(g, 0.34, 0.5, 0.34, c.white, 0, 0.32, -RD / 2 + 0.22);       // Schwungrad-Gehäuse
-    tube(g, V(0, 0.5, -RD / 2 + 0.22), V(0, 1.0, RD / 2 - 0.3), 0.045, c.blk);
-    tube(g, V(0, 0.1, RD / 2 - 0.24), V(0, 0.98, RD / 2 - 0.3), 0.045, c.blk);
-    box(g, 0.24, 0.07, 0.16, c.pad, 0, 1.0, RD / 2 - 0.3);            // Sattel
-    tube(g, V(0, 0.9, -RD / 2 + 0.26), V(0, 1.18, -RD / 2 + 0.34), 0.03, c.blk); // Lenkersäule
-    tube(g, V(-0.18, 1.18, -RD / 2 + 0.34), V(0.18, 1.18, -RD / 2 + 0.34), 0.016, c.blk);
-    box(g, 0.2, 0.16, 0.03, c.screen, 0, 1.24, -RD / 2 + 0.3);
-    cyl(g, 0.1, 0.05, c.blk, 0, 0.34, 0.02, "x");
-    return place(g, 0.6, RD, fp);
+    // cardiostrong IB50 Incline Bike: L130 x B63 x H120, schwarz/weiß, Schwungrad an +X
+    var RL = 1.3;
+    box(g, 0.1, 0.07, 0.5, c.blk, -RL / 2 + 0.14, 0.05, 0);
+    box(g, 0.1, 0.07, 0.5, c.blk, RL / 2 - 0.14, 0.05, 0);
+    box(g, 0.34, 0.5, 0.34, c.white, RL / 2 - 0.22, 0.32, 0);          // Schwungrad-Gehäuse
+    tube(g, V(RL / 2 - 0.22, 0.5, 0), V(-RL / 2 + 0.3, 1.0, 0), 0.045, c.blk);
+    tube(g, V(-RL / 2 + 0.24, 0.1, 0), V(-RL / 2 + 0.3, 0.98, 0), 0.045, c.blk);
+    box(g, 0.07, 0.07, 0.24, c.pad, -RL / 2 + 0.3, 1.0, 0);             // Sattel
+    tube(g, V(RL / 2 - 0.26, 0.9, 0), V(RL / 2 - 0.34, 1.18, 0), 0.03, c.blk); // Lenkersäule
+    tube(g, V(RL / 2 - 0.34, 1.18, -0.18), V(RL / 2 - 0.34, 1.18, 0.18), 0.016, c.blk);
+    box(g, 0.03, 0.16, 0.2, c.screen, RL / 2 - 0.3, 1.24, 0);
+    cyl(g, 0.1, 0.05, c.blk, 0.02, 0.34, 0, "z");
+    return place(g, RL, 0.63, fp);
   }
 
-  /* ---- Rudergerät ---- */
+  /* ---- Rudergerät ---- (Länge entlang X, Schwungrad/Tank an −X) */
   function buildRower(fp, tier) {
     var g = new THREE.Group(), c = mats();
     if (tier === "premium") {
       // Concept2 RowErg: 244 lang, graues Schwungradgehäuse, Alu-Monorail
-      var rd = 2.44;
-      cyl(g, 0.24, 0.16, c.grey, 0, 0.26, -rd / 2 + 0.2, "x", 24);    // Schwungrad
-      box(g, 0.34, 0.34, 0.28, c.blk, 0, 0.28, -rd / 2 + 0.2);        // Gehäuse-Abdeckung
-      box(g, 0.5, 0.06, 0.16, c.blk, 0, 0.04, -rd / 2 + 0.16);        // Frontfuß
-      tube(g, V(0, 0.34, -rd / 2 + 0.28), V(0, 0.3, rd / 2 - 0.2), 0.03, c.silver);  // Monorail
-      box(g, 0.22, 0.05, 0.26, c.pad, 0, 0.36, rd / 2 - 0.6);         // Sitz
-      box(g, 0.12, 0.1, 0.4, c.blk, 0, 0.06, rd / 2 - 0.16);          // Hinterfuß
-      tube(g, V(-0.22, 0.32, -rd / 2 + 0.42), V(0.22, 0.32, -rd / 2 + 0.42), 0.014, c.blk); // Zuggriff
-      box(g, 0.16, 0.24, 0.03, c.screen, 0, 0.6, -rd / 2 + 0.16);     // PM5 Arm
-      return place(g, 0.61, rd, fp);
+      var rl = 2.44;
+      cyl(g, 0.24, 0.16, c.grey, -rl / 2 + 0.2, 0.26, 0, "z", 24);     // Schwungrad
+      box(g, 0.28, 0.34, 0.34, c.blk, -rl / 2 + 0.2, 0.28, 0);          // Gehäuse-Abdeckung
+      box(g, 0.16, 0.06, 0.5, c.blk, -rl / 2 + 0.16, 0.04, 0);          // Frontfuß
+      tube(g, V(-rl / 2 + 0.28, 0.34, 0), V(rl / 2 - 0.2, 0.3, 0), 0.03, c.silver);  // Monorail
+      box(g, 0.05, 0.26, 0.22, c.pad, rl / 2 - 0.6, 0.36, 0);           // Sitz
+      box(g, 0.4, 0.1, 0.12, c.blk, rl / 2 - 0.16, 0.06, 0);            // Hinterfuß
+      tube(g, V(-rl / 2 + 0.42, 0.32, -0.22), V(-rl / 2 + 0.42, 0.32, 0.22), 0.014, c.blk); // Zuggriff
+      box(g, 0.03, 0.24, 0.16, c.screen, -rl / 2 + 0.16, 0.6, 0);       // PM5 Arm
+      return place(g, rl, 0.61, fp);
     }
-    // Kettler Regatta 200: Wasserrudergerät, silber/schwarz, Tank vorn
-    var RD = 1.79;
-    cyl(g, 0.2, 0.24, M(0x2f6f8f, 0.35, 0.1), 0, 0.3, -RD / 2 + 0.24, "z", 20); // Wassertank
-    box(g, 0.44, 0.08, 0.16, c.silver, 0, 0.05, -RD / 2 + 0.2);
-    tube(g, V(0, 0.28, -RD / 2 + 0.32), V(0, 0.22, RD / 2 - 0.16), 0.03, c.silver);
-    box(g, 0.22, 0.06, 0.26, c.pad, 0, 0.3, RD / 2 - 0.5);
-    box(g, 0.12, 0.1, 0.34, c.silver, 0, 0.06, RD / 2 - 0.14);
-    tube(g, V(-0.2, 0.3, -RD / 2 + 0.42), V(0.2, 0.3, -RD / 2 + 0.42), 0.014, c.blk);
-    box(g, 0.16, 0.2, 0.03, c.screen, 0, 0.56, -RD / 2 + 0.2);
-    return place(g, 0.5, RD, fp);
+    // Kettler Regatta 200: Wasserrudergerät, silber/schwarz, Tank an −X
+    var RL = 1.8;
+    cyl(g, 0.2, 0.24, M(0x2f6f8f, 0.35, 0.1), -RL / 2 + 0.24, 0.3, 0, "z", 20); // Wassertank (Achse quer, Z)
+    box(g, 0.16, 0.08, 0.44, c.silver, -RL / 2 + 0.2, 0.05, 0);
+    tube(g, V(-RL / 2 + 0.32, 0.28, 0), V(RL / 2 - 0.16, 0.22, 0), 0.03, c.silver);
+    box(g, 0.06, 0.06, 0.22, c.pad, RL / 2 - 0.5, 0.3, 0);
+    box(g, 0.1, 0.1, 0.34, c.silver, RL / 2 - 0.14, 0.06, 0);
+    tube(g, V(-RL / 2 + 0.42, 0.3, -0.2), V(-RL / 2 + 0.42, 0.3, 0.2), 0.014, c.blk);
+    box(g, 0.03, 0.2, 0.16, c.screen, -RL / 2 + 0.2, 0.56, 0);
+    return place(g, RL, 0.45, fp);
   }
 
   /* ---- Zubehör ---- */
@@ -544,6 +546,15 @@
     legpress: buildLegPress, smith: buildSmith, treadmill: buildTreadmill, bike: buildBike,
     rower: buildRower, barbell: buildBarbell, plates: buildPlates,
     dumbbells: buildDumbbells, kettlebells: buildKettlebells
+  };
+  // Zubehör hat im 2D-Planer bewusst keine x/y-Position (reine Kostenrechner-
+  // Menge, siehe planer.js "palette: accessories (no canvas placement)"). Für
+  // die 3D-Ansicht bekommt es hier eine kompakte, nicht editierbare Lagerecke.
+  // Diese Maße sind rein interne Display-Größen, KEIN Kundenwert (erscheinen
+  // nirgends als "Platzbedarf").
+  var ACCESSORY_FP = {
+    barbell: { w: 220, d: 50 }, plates: { w: 60, d: 50 },
+    dumbbells: { w: 70, d: 40 }, kettlebells: { w: 50, d: 35 }
   };
 
   /* ---------- Three.js-Grundgerüst (einmalig) ---------- */
@@ -686,6 +697,23 @@
     grid.position.y = 0.004;
     roomGroup.add(grid);
 
+    // Bodenbelag (Gummiboden), falls im 2D-Planer aktiviert — gleiche
+    // Tönung wie die CSS-Vorschau dort (.planner-flooring-fill).
+    if (s.flooring) {
+      var flMat = new THREE.MeshStandardMaterial({
+        color: s.flooring.tier === "premium" ? 0xa85c3f : 0x5c7a5c,
+        roughness: 0.92, transparent: true, opacity: 0.4, side: THREE.DoubleSide
+      });
+      var flShape = new THREE.Shape();
+      P.forEach(function (p, i) { i ? flShape.lineTo(p.x, p.z) : flShape.moveTo(p.x, p.z); });
+      flShape.closePath();
+      var flMesh = new THREE.Mesh(new THREE.ShapeGeometry(flShape), flMat);
+      flMesh.rotation.x = -Math.PI / 2;
+      flMesh.position.y = 0.006;
+      flMesh.receiveShadow = true;
+      roomGroup.add(flMesh);
+    }
+
     var wallMat = new THREE.MeshStandardMaterial({ color: 0xc4b7a1, roughness: 0.95 });
     var leafMat = new THREE.MeshStandardMaterial({ color: 0xa68a73, roughness: 0.8 });
 
@@ -748,6 +776,33 @@
       g.rotation.y = -rot;
       roomGroup.add(g);
     });
+
+    // Zubehör: kompakte Lagerecke (keine 2D-Position vorhanden, siehe oben)
+    if (s.accessories && s.accessories.length) {
+      var roomW = maxX - minX, roomD = maxZ - minZ;
+      var alongX = roomW >= roomD;   // in der längeren Raumrichtung aufreihen
+      var inset = 0.35;
+      var baseX = minX - cx + inset, baseZ = minZ - cz + inset;
+      var cursor = 0;
+      s.accessories.forEach(function (a) {
+        var fpA = ACCESSORY_FP[a.catId];
+        if (!fpA || !MODELS[a.catId]) return;
+        var am = MODELS[a.catId](fpA, a.tier);
+        if (a.catId === "barbell") {
+          // liegt flach an der nächstgelegenen Wand entlang
+          am.rotation.y = alongX ? 0 : Math.PI / 2;
+          am.position.set(baseX + (alongX ? 1.1 : 0.25), 0.01, baseZ + (alongX ? 0.25 : 1.1));
+        } else {
+          am.position.set(
+            baseX + (alongX ? cursor + 0.35 : 0.35),
+            0.01,
+            baseZ + (alongX ? 0.35 : cursor + 0.35)
+          );
+          cursor += 0.8;
+        }
+        roomGroup.add(am);
+      });
+    }
 
     radius = Math.max(3.2, Math.hypot(maxX - minX, maxZ - minZ) * 1.15 + 1.5);
     radiusMin = Math.max(1.2, radius * 0.22);

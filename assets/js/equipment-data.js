@@ -47,8 +47,8 @@ var VITARO_EQUIPMENT = [
       budget:  { brand: "Gorilla Sports", model: "Kraftstation SmartGym H8",     price: 1199.99, url: "https://www.gorillasports.de/products/kabelzugstation-smartgym-h8", blurb: "Echter freistehender Doppelturm-Funktionstrainer mit doppeltem Gewichtsblock, kein einzelner Kabelzug-Aufsatz. Nach Prüfung bestätigt: 4,80★ bei 30 Bewertungen vor Ort." },
       premium: { brand: "NOHRD",          model: "SlimBeam Kabelzugstation",     price: 1899, priceNote: "ab", url: "https://www.fitshop.de/nohrd-kabelzugstation-slimbeam-no-15.112", blurb: "Wandmontierte Kabelzugstation aus deutscher Fertigung (Enger, NRW) mit echter Holzverkleidung — gebaut für den Wohnraum, nicht den Keller, deshalb der deutlich kleinere Platzbedarf." }
     },
-    footprint: { budget: { w: 150, d: 120 }, premium: { w: 70, d: 40 } },
-    note: "Premium ist wandmontiert (NOHRD SlimBeam) — deshalb der deutlich kleinere Platzbedarf gegenüber dem freistehenden Einstiegsmodell.",
+    footprint: { budget: { w: 150, d: 120 }, premium: { w: 40, d: 25 } },
+    note: "Premium ist wandmontiert (NOHRD SlimBeam, 40 cm breit, laut Hersteller 10 cm Wandabstand + 20 cm Auszug) — deshalb der deutlich kleinere Platzbedarf gegenüber dem freistehenden Einstiegsmodell.",
     clearance: { top: 60, bottom: 90, left: 60, right: 60, access: "bottom", sourceLabel: "Untere Faustregel-Spanne (60–91 cm) aus Fitness-Ratgebern für Privatgebrauch. Ein Hersteller-Handbuch (TRUE Fitness, kommerzieller Doppelturm) nennt bis zu 254 cm — für ein einzelnes Heimgerät nicht übertragbar." }
   },
   {
@@ -60,8 +60,8 @@ var VITARO_EQUIPMENT = [
       budget:  { brand: "Taurus",                          model: "Brustpresse IFP",                price: 799,  url: "https://www.fitshop.de/taurus-brustpresse-ifp-seated-chest-press-tf-ifp1201", blurb: "In Deutschland entwickelte Studio-Line-Maschine für den leichten gewerblichen Einsatz — isolaterale Arme, 100 kg pro Seite mit Standardscheiben." },
       premium: { brand: "Hammer Strength by Life Fitness",  model: "Select Chest Press",              price: 6932, url: "https://www.fitshop.de/hammer-strength-by-life-fitness-kraftstation-select-chest-press-lf-hs-cp", blurb: "Waschechte Gewerbe-Kraftstation von Life Fitness/Hammer Strength — die Referenzklasse, wie sie in echten Fitnessstudios steht." }
     },
-    footprint: { budget: { w: 120, d: 150 }, premium: { w: 150, d: 180 } },
-    note: "Keine echte Einstiegsmarke bietet eine eigenständige Brustpresse — Taurus' leicht-gewerbliche Studio-Line springt hier als günstigste dedizierte Maschine ein.",
+    footprint: { budget: { w: 128, d: 98 }, premium: { w: 145, d: 110 } },
+    note: "Keine echte Einstiegsmarke bietet eine eigenständige Brustpresse — Taurus' leicht-gewerbliche Studio-Line springt hier als günstigste dedizierte Maschine ein. Platzbedarf nach Herstellermaß korrigiert (breiter als tief: Taurus IFP1201 B128×L98, Hammer Strength Select L105×B145).",
     clearance: { top: 50, bottom: 50, left: 50, right: 50, access: "bottom", sourceLabel: "Faustregel aus Fitness-Planungsratgebern (50–60 cm rundum) — keine gerichtete Angabe gefunden, keine DIN-/DGUV-Vorschrift." }
   },
   {
@@ -123,7 +123,7 @@ var VITARO_EQUIPMENT = [
       budget:  { brand: "Kettler",  model: "Regatta 200",           price: 699,  url: "https://www.fitshop.de/kettler-rudergeraet-regatta-200-k-ro1041-100", blurb: "Bewährtes Einstiegsrudergerät des deutschen Traditionsherstellers Kettler." },
       premium: { brand: "Concept2", model: "RowErg (Standardbeine)", price: 1195, url: "https://www.concept2.de/ergs/rowerg", blurb: "Der weltweite Referenzstandard fürs Rudertraining — dasselbe Modell, das in Wettkämpfen eingesetzt wird." }
     },
-    footprint: { budget: { w: 210, d: 55 }, premium: { w: 245, d: 60 } },
+    footprint: { budget: { w: 180, d: 45 }, premium: { w: 245, d: 60 } },
     clearance: { left: 20, right: 50, top: 40, bottom: 40, access: "right", sourceLabel: "Faustregel, geringe Quellenlage (kein Herstellerwert öffentlich gefunden): Schwungrad-/Monitorseite ~20 cm, Sitzschienen-/Beinstreckseite ~50 cm." }
   },
 
