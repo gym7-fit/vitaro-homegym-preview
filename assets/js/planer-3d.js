@@ -122,6 +122,17 @@
     if (axis === "z") m.rotation.x = Math.PI / 2;
     m.castShadow = true; g.add(m); return m;
   }
+  // kurze Endkappe, Achse entlang Z (Rohrenden, Griffkappen, Puffer)
+  function capZ(g, x, y, z, r, len, mat) {
+    var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 16), mat);
+    m.rotation.x = Math.PI / 2;
+    m.position.set(x, y, z); m.castShadow = true; g.add(m); return m;
+  }
+  // Kugel-Gelenk an Rohrknoten (Verbindung statt frei endender Zylinder)
+  function joint(g, p, r, mat) {
+    var m = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), mat);
+    m.position.copy(p); m.castShadow = true; g.add(m); return m;
+  }
   // X/Z sanft auf Grundfläche bringen (Verhältnis bleibt glaubwürdig)
   function place(g, realW, realD, fp) {
     var sx = Math.max(0.8, Math.min(1.25, (fp.w / 100) / realW));
@@ -177,33 +188,51 @@
     var prem = tier === "premium";
     var rw = prem ? 1.22 : 1.15, rd = prem ? 1.67 : 1.15, H = prem ? 2.28 : 2.12;
     var ux = rw / 2 - 0.05, uz = rd / 2 - 0.05, r = prem ? 0.045 : 0.038;
+    var holeCount = prem ? 12 : 8, holeSpan = H - (prem ? 0.24 : 0.36), holeStart = prem ? 0.14 : 0.18;
     [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (p) {
       tube(g, V(p[0] * ux, 0, p[1] * uz), V(p[0] * ux, H, p[1] * uz), r, c.blk);
-      box(g, 0.16, 0.05, 0.16, c.dark, p[0] * ux, 0.03, p[1] * uz);
+      box(g, 0.16, 0.05, 0.16, c.dark, p[0] * ux, 0.03, p[1] * uz);      // Fußplatte
+      cyl(g, 0.012, 0.02, c.chrome, p[0] * ux + p[0] * 0.055, 0.02, p[1] * uz, "y", 8); // Bodendübel
+      // Lochraster: Reihe Steckbohrungen auf der raumzugewandten Innenkante
+      for (var hi = 0; hi < holeCount; hi++) {
+        var hy = holeStart + holeSpan * (hi / (holeCount - 1));
+        cyl(g, r * 0.42, r * 1.3, c.iron, p[0] * (ux - r * 0.9), hy, p[1] * uz, "x", 8);
+      }
     });
-    // Fuß-Längsholme + oberer Rahmen
+    // Fuß-Längsholme + oberer Rahmen (3-seitig: hinten + beide Seiten)
     [-1, 1].forEach(function (sx) {
       tube(g, V(sx * ux, 0.05, -uz), V(sx * ux, 0.05, uz), r * 0.8, c.blk);
       tube(g, V(sx * ux, H - 0.04, -uz), V(sx * ux, H - 0.04, uz), r * 0.8, c.blk);
+      joint(g, V(sx * ux, H - 0.04, -uz), r, c.blk);
+      joint(g, V(sx * ux, H - 0.04, uz), r, c.blk);
     });
     tube(g, V(-ux, H - 0.04, -uz), V(ux, H - 0.04, -uz), r * 0.8, c.blk);
-    // Multi-Grip Klimmzugstange vorn
-    tube(g, V(-ux, H - 0.02, uz - 0.02), V(ux, H - 0.02, uz - 0.02), 0.02, c.blk, 16);
+    tube(g, V(-ux, 0.14, -uz), V(ux, 0.14, -uz), r * 0.65, c.dark);        // untere Rückenquere
+    // Klimmzugstange vorn — gerade Mitte, Premium zusätzlich Neutral- + Weitgriff
+    tube(g, V(-ux, H - 0.02, uz - 0.02), V(ux, H - 0.02, uz - 0.02), 0.021, c.blk, 16);
+    capZ(g, -ux, H - 0.02, uz - 0.02, 0.028, 0.025, c.dark);
+    capZ(g, ux, H - 0.02, uz - 0.02, 0.028, 0.025, c.dark);
     if (prem) {
-      tube(g, V(-0.22, H - 0.02, uz - 0.02), V(-0.22, H - 0.14, uz - 0.22), 0.018, c.blk);
-      tube(g, V(0.22, H - 0.02, uz - 0.02), V(0.22, H - 0.14, uz - 0.22), 0.018, c.blk);
-      tube(g, V(-0.22, H - 0.14, uz - 0.22), V(0.22, H - 0.14, uz - 0.22), 0.018, c.blk, 16);
+      [-1, 1].forEach(function (s) { tube(g, V(s * 0.1, H - 0.02, uz - 0.02), V(s * 0.1, H - 0.15, uz - 0.02), 0.017, c.blk); }); // Neutralgriffe
+      tube(g, V(-0.26, H - 0.02, uz - 0.02), V(-0.26, H - 0.16, uz - 0.24), 0.017, c.blk);
+      tube(g, V(0.26, H - 0.02, uz - 0.02), V(0.26, H - 0.16, uz - 0.24), 0.017, c.blk);
+      tube(g, V(-0.26, H - 0.16, uz - 0.24), V(0.26, H - 0.16, uz - 0.24), 0.017, c.blk, 16); // Weitgriff-Bogen
     }
-    // J-Haken vorn
+    // J-Haken: zweifarbig (Metallschale + Kunststoffeinlage)
     [-1, 1].forEach(function (sx) {
-      box(g, 0.06, 0.05, 0.12, prem ? c.red : c.dark, sx * ux, 1.02, uz - 0.06);
+      box(g, 0.07, 0.05, 0.14, c.dark, sx * ux, 1.02, uz - 0.07);
+      box(g, 0.05, 0.03, 0.1, prem ? c.red : c.grey, sx * ux, 1.045, uz - 0.06);
     });
-    // Safety-Bars quer
-    tube(g, V(-ux, 0.42, 0), V(ux, 0.42, 0), 0.022, c.dark, 12);
-    if (prem) { // Spotter-Arme + seitliche Scheibendorne mit Scheiben
+    // Safety-Bars quer mit Endkappen
+    tube(g, V(-ux, 0.42, -0.08), V(ux, 0.42, -0.08), 0.022, c.dark, 12);
+    capZ(g, -ux, 0.42, -0.08, 0.028, 0.02, c.chrome);
+    capZ(g, ux, 0.42, -0.08, 0.028, 0.02, c.chrome);
+    if (prem) { // Spotter-Arme + seitliche Weight-Horns mit Scheiben
       [-1, 1].forEach(function (sx) {
-        tube(g, V(sx * ux, 0.9, uz - 0.04), V(sx * ux, 0.86, uz - 0.5), 0.02, c.red);
-        cyl(g, 0.02, 0.22, c.blk, sx * (ux + 0.14), 0.5, -uz + 0.1, "x");
+        tube(g, V(sx * ux, 0.9, uz - 0.04), V(sx * ux, 0.86, uz - 0.5), 0.022, c.red);
+        capZ(g, sx * ux, 0.86, uz - 0.5, 0.026, 0.02, c.dark);
+        cyl(g, 0.022, 0.22, c.blk, sx * (ux + 0.14), 0.5, -uz + 0.1, "x");
+        capZ(g, sx * (ux + 0.14 + 0.11), 0.5, -uz + 0.1, 0.024, 0.02, c.dark);
         plateStack(g, sx * (ux + 0.14), 0.5, -uz + 0.1, "x", 3, 0.16, 0.035, c.iron);
       });
     }
