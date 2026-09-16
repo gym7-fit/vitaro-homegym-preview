@@ -58,3 +58,15 @@ nicht +Z (nach vorn) entspricht.
 - `legpress_premium.glb` — Hammer Strength SE Seated Leg Press:
   sitzend, selektorisiert (interner Gewichtsstapel statt Plattenladen,
   bei Recherche korrigiert), A-Bock mit Schlitten-Schienen.
+- `rower_budget.glb` — Kettler Regatta 200: gerade Mittelschiene,
+  schräg montierter Wassertank mit Widerstand über Füllstand.
+- `rower_premium.glb` — Concept2 RowErg: Aluminium-Monoschiene,
+  offenes Speichen-Schwungrad (Luftwiderstand), PM5-Monitorarm.
+- `treadmill_budget.glb` — cardiostrong TX50: klassisches Motor-
+  Laufband, Motorhaube vorn, konvergierende Lenkerholme zur Konsole.
+- `treadmill_premium.glb` — NOHRD Sprintbok V.2: motorloses,
+  gebogenes Lamellen-Laufband mit Echtholz-Seitenschienen.
+- `bike_budget.glb` — cardiostrong IB50 Incline Bike: geschlossenes
+  Schwungrad hinten, Rennlenker, Sattel, durchgehender Hauptrahmen.
+- `bike_premium.glb` — Concept2 BikeErg: offenes Speichen-Schwungrad
+  vorn (Luftwiderstand), Aluminium-Rahmen, PM5-Monitorarm.

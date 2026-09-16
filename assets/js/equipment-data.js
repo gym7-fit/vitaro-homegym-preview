@@ -99,8 +99,8 @@ var VITARO_EQUIPMENT = [
       budget:  { brand: "cardiostrong", model: "Laufband TX50",      price: 1799, url: "https://www.fitshop.de/cardiostrong-laufband-tx50-cst-tx50-4", blurb: "Solides Einstiegs-Laufband für den regelmäßigen Hausgebrauch." },
       premium: { brand: "NOHRD",        model: "Sprintbok V.2",       price: 6699, priceNote: "ab", url: "https://www.fitshop.de/nohrd-laufband-sprintbok-v.2-no-23121", blurb: "Motorloses, gebogenes Lauf-Curve — trainiert natürlicher als ein Motor-Laufband und ist dabei etwas kompakter." }
     },
-    footprint: { budget: { w: 190, d: 90 }, premium: { w: 170, d: 80 } },
-    note: "Premium (Sprintbok) ist ein motorloses, gebogenes Lauf-Curve — etwas kompakter als ein klassisches Motor-Laufband.",
+    footprint: { budget: { w: 190, d: 90 }, premium: { w: 180, d: 86 } },
+    note: "Premium (Sprintbok) ist ein motorloses, gebogenes Lauf-Curve — etwas kompakter als ein klassisches Motor-Laufband. Footprint nach Herstellerangabe (180x86x153cm) korrigiert (zuvor 170x80cm angesetzt).",
     clearance: { left: 100, right: 60, top: 40, bottom: 40, access: "left", sourceLabel: "Rückseite (100 cm): Kettler-Handbuch (echtes Heimlaufband, „mind. 1 m rundum größer als Trainingsfläche“) — die vorher genannten 200 cm stammen aus der US-Norm ASTM F2115 und Herstellerquellen für den kommerziellen/US-Kontext, nicht in DE/EU verbindlich und für ein einzelnes Heimgerät zu großzügig. Rückseite bleibt trotzdem die großzügigste Richtung (Sturzrisiko bei laufendem Band)." }
   },
   {

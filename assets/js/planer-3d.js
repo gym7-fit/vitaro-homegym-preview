@@ -608,6 +608,18 @@
     legpress: {
       budget: { url: "assets/models/legpress_budget.glb", yaw: 0 },
       premium: { url: "assets/models/legpress_premium.glb", yaw: 0 }
+    },
+    rower: {
+      budget: { url: "assets/models/rower_budget.glb", yaw: 0 },
+      premium: { url: "assets/models/rower_premium.glb", yaw: 0 }
+    },
+    treadmill: {
+      budget: { url: "assets/models/treadmill_budget.glb", yaw: 0 },
+      premium: { url: "assets/models/treadmill_premium.glb", yaw: 0 }
+    },
+    bike: {
+      budget: { url: "assets/models/bike_budget.glb", yaw: 0 },
+      premium: { url: "assets/models/bike_premium.glb", yaw: 0 }
     }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
