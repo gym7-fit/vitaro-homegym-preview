@@ -53,3 +53,8 @@ nicht +Z (nach vorn) entspricht.
 - `smith_premium.glb` — ATX Power Smith Rack PSR-780: massiverer
   Power-Rack-Käfig mit Diagonalverstrebung, verchromten Führungen,
   J-Hooks auf 4 Höhen, 6 gepolsterten Safety-Spotter-Armen.
+- `legpress_budget.glb` — Taurus Vertikale Beinpresse IFP: geneigter
+  Schienenturm mit Schlitten, Plattenhörner, geneigte Rückenlehne.
+- `legpress_premium.glb` — Hammer Strength SE Seated Leg Press:
+  sitzend, selektorisiert (interner Gewichtsstapel statt Plattenladen,
+  bei Recherche korrigiert), A-Bock mit Schlitten-Schienen.

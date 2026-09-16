@@ -604,6 +604,10 @@
     smith: {
       budget: { url: "assets/models/smith_budget.glb", yaw: 0 },
       premium: { url: "assets/models/smith_premium.glb", yaw: 0 }
+    },
+    legpress: {
+      budget: { url: "assets/models/legpress_budget.glb", yaw: 0 },
+      premium: { url: "assets/models/legpress_premium.glb", yaw: 0 }
     }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }

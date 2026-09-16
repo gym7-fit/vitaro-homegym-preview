@@ -71,10 +71,10 @@ var VITARO_EQUIPMENT = [
     placement: "floor",
     tiers: {
       budget:  { brand: "Taurus",                         model: "Vertikale Beinpresse IFP",   price: 1299,  url: "https://www.fitshop.de/taurus-vertikale-beinpresse-ifp-iso-vertical-leg-press-tf-ifp1613", blurb: "Platzsparende vertikale Bauweise aus derselben leicht-gewerblichen Taurus-Studio-Line wie die Brustpresse oben." },
-      premium: { brand: "Hammer Strength by Life Fitness", model: "SE Seated Leg Press",         price: 10591, url: "https://www.fitshop.de/hammer-strength-by-life-fitness-kraftstation-se-seated-leg-press-lf-hs-slp", blurb: "Klassische liegende Gewerbe-Beinpresse — deutlich größerer Platzbedarf, dafür Referenzqualität für ernsthaftes Beintraining." }
+      premium: { brand: "Hammer Strength by Life Fitness", model: "SE Seated Leg Press",         price: 10591, url: "https://www.fitshop.de/hammer-strength-by-life-fitness-kraftstation-se-seated-leg-press-lf-hs-slp", blurb: "Sitzende, selektorisierte Gewerbe-Beinpresse mit internem 195-kg-Gewichtsstapel (Steckpin, kein Plattenladen) — kompakter als das Einstiegsmodell, Referenzqualität für ernsthaftes Beintraining." }
     },
-    footprint: { budget: { w: 110, d: 160 }, premium: { w: 220, d: 190 } },
-    note: "Budget = vertikale Bauweise (platzsparender Schlitten). Premium = klassische liegende Gewerbe-Beinpresse, dafür deutlich größerer Platzbedarf.",
+    footprint: { budget: { w: 121, d: 165 }, premium: { w: 105, d: 200 } },
+    note: "Nach Prüfung korrigiert: Premium ist sitzend/selektorisiert (interner Gewichtsstapel, kein Plattenladen) und mit 105x200cm sogar schmaler als das Einstiegsmodell, nicht größer wie zuvor angenommen. Footprint für beide Stufen an Herstellerangaben angepasst.",
     clearance: { top: 75, bottom: 60, left: 60, right: 60, access: "top", sourceLabel: "Unterer Bereich der Faustregel-Spanne (Schlittenrichtung, Plattenbeladung seitlich 60–90 cm), für Privatgebrauch angesetzt — keine DIN-/DGUV-Vorschrift." }
   },
   {
