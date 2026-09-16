@@ -86,7 +86,8 @@ var VITARO_EQUIPMENT = [
       budget:  { brand: "Gorilla Sports", model: "Smith Machine (Klimmzug, Dip, Kabelzug)", price: 1699.99, url: "https://www.gorillasports.de/products/multifunction-smith-machine", blurb: "Kombigerät mit Smith-Funktion, Klimmzugstange, Dipgriffen und Kabelzug in einem Rahmen — viel Funktion auf wenig Grundfläche." },
       premium: { brand: "ATX Fitness",    model: "Power Smith Rack PSR-780",                price: 2990,    url: "https://www.megafitness.shop/atx-power-smith-rack.html", blurb: "Fahrbare Multipresse aus dem ATX-Studioqualität-Katalog, von deutschen Händlern durchgängig als solide Gewerbequalität beschrieben." }
     },
-    footprint: { budget: { w: 150, d: 130 }, premium: { w: 140, d: 140 } },
+    footprint: { budget: { w: 219, d: 128 }, premium: { w: 180, d: 130 } },
+    note: "Footprint nach Herstellerangaben korrigiert: Budget (Gorilla Sports, Herstellerseite) 219×127,5 cm statt der zuvor angesetzten 150×130 cm; Premium (ATX PSR-780, Herstellerseite) 180×129,5 cm statt 140×140 cm.",
     clearance: { top: 75, bottom: 75, left: 50, right: 50, access: "top", sourceLabel: "Unterer Bereich der Faustregel-Spanne (Gesamttiefe inkl. Bewegung, seitlich 50–75 cm), für Privatgebrauch angesetzt — keine DIN-/DGUV-Vorschrift." }
   },
   {

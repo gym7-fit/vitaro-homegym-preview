@@ -600,6 +600,10 @@
     cable: {
       budget: { url: "assets/models/cable_budget.glb", yaw: 0 },
       premium: { url: "assets/models/cable_premium.glb", yaw: 0 }
+    },
+    smith: {
+      budget: { url: "assets/models/smith_budget.glb", yaw: 0 },
+      premium: { url: "assets/models/smith_premium.glb", yaw: 0 }
     }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }

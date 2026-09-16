@@ -47,3 +47,9 @@ nicht +Z (nach vorn) entspricht.
 - `cable_premium.glb` — NOHRD SlimBeam, schlanke Holzsäule (40 cm
   breit, 215 cm hoch), Edelstahl-Beschläge, 15er Gewichtsstapel,
   Klimmzugstange oben.
+- `smith_budget.glb` — Gorilla Sports Multifunction Smith Machine:
+  Stahlkäfig mit Lochraster-Führungsschienen, Klimmzugstange, Dip-
+  Griffe, kleiner Kabelzug an der Rückseite.
+- `smith_premium.glb` — ATX Power Smith Rack PSR-780: massiverer
+  Power-Rack-Käfig mit Diagonalverstrebung, verchromten Führungen,
+  J-Hooks auf 4 Höhen, 6 gepolsterten Safety-Spotter-Armen.
