@@ -1,0 +1,46 @@
+/* ============================================================================
+   VITARO 3D-Planer  —  ZUSATZMODUL, komplett abtrennbar (siehe planer-3d.js).
+   Diese Datei betrifft ausschließlich den 3D-Zusatz.
+   ========================================================================== */
+.planner-3d-wrap { margin-top: 10px; }
+
+.planner-3d-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .78rem; font-weight: 700; font-family: inherit;
+  padding: 7px 14px; border-radius: 20px; cursor: pointer;
+  background: var(--card); color: var(--text);
+  border: 1px solid var(--line);
+  transition: background .12s, border-color .12s;
+}
+.planner-3d-toggle:hover { border-color: var(--accent); }
+.planner-3d-toggle.is-open { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+.planner-3d-panel {
+  margin-top: 10px;
+  border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+  background: var(--bg-alt);
+}
+.planner-3d-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 12px; border-bottom: 1px solid var(--line);
+  font-size: .74rem; color: var(--text-dim);
+}
+.planner-3d-bar label { display: flex; align-items: center; gap: 8px; }
+.planner-3d-bar input[type="range"] { width: 120px; }
+.planner-3d-bar b { color: var(--text); font-variant-numeric: tabular-nums; }
+.planner-3d-btn {
+  font: inherit; font-size: .72rem; font-weight: 700; cursor: pointer;
+  padding: 4px 10px; border-radius: 14px;
+  background: var(--card); color: var(--text); border: 1px solid var(--line);
+}
+.planner-3d-btn:hover { border-color: var(--accent); }
+.planner-3d-zoom { display: inline-flex; gap: 4px; }
+.planner-3d-zoom .planner-3d-btn { width: 28px; padding: 4px 0; text-align: center; }
+.planner-3d-stage { width: 100%; line-height: 0; }
+.planner-3d-stage canvas { width: 100% !important; height: 440px !important; display: block; }
+.planner-3d-msg { padding: 20px; font-size: .84rem; color: var(--text-dim); }
+.planner-3d-note { padding: 8px 12px; font-size: .7rem; color: var(--text-dim); opacity: .8; }
+
+@media (max-width: 860px) {
+  .planner-3d-stage canvas { height: 320px !important; }
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Konto — VITARO Home Gym</title>
+<meta name="description" content="Ihr VITARO-Konto: Ihre gespeicherte Planung, der Status Ihrer Anfrage und Ihr Ansprechpartner auf einen Blick.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23f5efe6'/%3E%3Ctext x='50' y='69' font-size='58' font-family='Arial' font-weight='900' fill='%23181410' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
+<script>
+  (function(){
+    try{
+      var stored = localStorage.getItem('vitaro-theme');
+      var theme;
+      if(stored === 'dark' || stored === 'light'){ theme = stored; }
+      else { theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }
+      document.documentElement.setAttribute('data-theme', theme);
+    }catch(e){}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=39">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-word">VITARO</span><span class="logo-sub"><span>HOME</span><span>GYMS</span></span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menü umschalten" aria-expanded="false" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <div class="nav-links">
+          <a href="leistungen.html">Leistungen</a>
+          <a href="pakete.html">Pakete &amp; Ablauf</a>
+          <a href="planer.html">Planer</a>
+          <a href="galerie.html">Galerie</a>
+          <a href="index.html#warum">Warum VITARO</a>
+          <a href="ressourcen.html">Ratgeber</a>
+          <a href="kontakt.html">Kontakt</a>
+        </div>
+        <div class="nav-cta">
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Hell-/Dunkelmodus umschalten" title="Hell-/Dunkelmodus umschalten">
+            <span class="icon-dark">&#9789;</span><span class="icon-light">&#9788;</span>
+          </button>
+          <span data-auth-slot></span>
+          <a href="kontakt.html" class="btn btn-primary">Erstgespräch anfragen</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="nav-backdrop" id="navBackdrop" onclick="closeMobileMenu()"></div>
+
+<main id="main">
+<section class="hero hero-sm">
+  <div class="wrap hero-content hero-inner">
+    <span class="eyebrow">Mein Konto</span>
+    <h1 id="kontoGreeting">Willkommen zurück.</h1>
+    <p class="lead" id="kontoLead">Hier finden Sie Ihre gespeicherte Planung, den Status Ihrer Anfrage und Ihren Ansprechpartner.</p>
+  </div>
+</section>
+
+<section id="kontoLoggedOut" hidden>
+  <div class="wrap" style="text-align:center;max-width:520px;">
+    <p style="margin-bottom:24px;">Sie sind noch nicht registriert oder auf diesem Gerät angemeldet.</p>
+    <button type="button" class="btn btn-primary" id="kontoLoginBtn">Registrieren / Anmelden</button>
+  </div>
+</section>
+
+<div id="kontoLoggedIn" hidden>
+<section id="konto-uebersicht">
+  <div class="wrap">
+    <div class="spec-grid">
+      <div class="model-card">
+        <h3>Ihre Daten</h3>
+        <p id="kontoName"></p>
+        <p id="kontoEmail" style="margin-top:4px;"></p>
+        <p id="kontoPhone" style="margin-top:4px;"></p>
+        <button type="button" class="btn btn-ghost" id="kontoLogoutBtn" style="margin-top:18px;">Abmelden</button>
+      </div>
+      <div class="model-card">
+        <h3>Status Ihrer Anfrage</h3>
+        <p id="kontoStatus"></p>
+      </div>
+      <div class="model-card">
+        <h3>Ihr Ansprechpartner</h3>
+        <p>Persönlich betreut, direkt beim Gründer.</p>
+        <p style="margin-top:10px;"><a href="kontakt.html" data-contact-email hidden></a><span id="contactEmailPending">E-Mail folgt in Kürze</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="konto-plan">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Ihre Planung</span>
+      <h2>Der aktuelle Stand aus dem Planer.</h2>
+    </div>
+    <div id="kontoPlanEmpty" class="model-card" hidden>
+      <p>Sie haben im Planer noch nichts zusammengestellt.</p>
+    </div>
+    <div id="kontoPlanContent" hidden>
+      <div class="planner-cost-list" id="kontoPlanList" style="background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:8px 20px;"></div>
+      <div class="planner-cost-total" style="max-width:none;">
+        <span>Gesamtsumme (brutto)</span>
+        <b id="kontoPlanTotal">0 €</b>
+      </div>
+      <div class="hero-actions" style="margin-top:24px;">
+        <a href="planer.html" class="btn btn-primary">Planung öffnen &amp; weiterbearbeiten</a>
+        <a href="angebot.html" class="btn btn-ghost">Planangebot als PDF</a>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <h2>Lassen Sie uns über Ihren Raum sprechen.</h2>
+        <p>Ob Sie schon einen Raum im Kopf haben oder erst planen, wo Platz wäre — der erste Schritt ist ein kostenloses Gespräch.</p>
+        <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="kontakt.html#contactForm" class="btn btn-primary">Kontakt aufnehmen</a>
+          <a href="planer.html" class="btn btn-ghost">Zum Planer</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Unternehmen</h4>
+        <a href="leistungen.html">Leistungen</a>
+        <a href="pakete.html">Pakete &amp; Ablauf</a>
+        <a href="planer.html">Planer</a>
+        <a href="galerie.html">Galerie</a>
+        <a href="index.html#warum">Warum VITARO</a>
+        <a href="ressourcen.html">Ratgeber</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <a href="kontakt.html">Kontaktformular</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Ihr privates Fitnessstudio, gut geplant.</span>
+      <div class="footer-legal">
+        <span>© 2026 VITARO Home Gym. Ein Angebot von Vitaro Gym Solutions.</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutzerklärung</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/equipment-data.js?v=5"></script>
+<script src="assets/js/pricing-config.js?v=1"></script>
+<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/auth.js?v=4"></script>
+<script src="assets/js/konto.js?v=1"></script>
+</body>
+</html>

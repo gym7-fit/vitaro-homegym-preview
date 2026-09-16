@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galerie — VITARO Home Gym</title>
+<meta name="description" content="Beispiele privater Fitnessräume und Detailaufnahmen — ein Eindruck davon, wie ein VITARO Home Gym aussehen kann.">
+<link rel="canonical" href="https://vitaro-homegym.example/galerie.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VITARO Home Gym">
+<meta property="og:title" content="Galerie — VITARO Home Gym">
+<meta property="og:description" content="Beispiele und Detailaufnahmen privater Fitnessräume.">
+<meta property="og:url" content="https://vitaro-homegym.example/galerie.html">
+<meta property="og:image" content="https://vitaro-homegym.example/assets/media/vitaro-homegym-hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23f5efe6'/%3E%3Ctext x='50' y='69' font-size='58' font-family='Arial' font-weight='900' fill='%23181410' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
+<script>
+  (function(){
+    try{
+      var stored = localStorage.getItem('vitaro-theme');
+      var theme;
+      if(stored === 'dark' || stored === 'light'){ theme = stored; }
+      else { theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }
+      document.documentElement.setAttribute('data-theme', theme);
+    }catch(e){}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=39">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-word">VITARO</span><span class="logo-sub"><span>HOME</span><span>GYMS</span></span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menü umschalten" aria-expanded="false" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <div class="nav-links">
+          <a href="leistungen.html">Leistungen</a>
+          <a href="pakete.html">Pakete &amp; Ablauf</a>
+          <a href="planer.html">Planer</a>
+          <a href="galerie.html" class="active">Galerie</a>
+          <a href="index.html#warum">Warum VITARO</a>
+          <a href="ressourcen.html">Ratgeber</a>
+          <a href="kontakt.html">Kontakt</a>
+        </div>
+        <div class="nav-cta">
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Hell-/Dunkelmodus umschalten" title="Hell-/Dunkelmodus umschalten">
+            <span class="icon-dark">&#9789;</span><span class="icon-light">&#9788;</span>
+          </button>
+          <span data-auth-slot></span>
+          <a href="kontakt.html" class="btn btn-primary">Erstgespräch anfragen</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="nav-backdrop" id="navBackdrop" onclick="closeMobileMenu()"></div>
+
+<main id="main">
+
+<section class="hero hero-sm">
+  <div class="wrap hero-content hero-inner">
+    <span class="eyebrow">Galerie</span>
+    <h1>Ein Eindruck davon, wie Ihr Raum aussehen könnte.</h1>
+    <p class="lead">Sechs Beispielräume in unterschiedlichen Häusern und Stilen, dazu Detailaufnahmen zu Geräten, Material und Ausstattung.</p>
+  </div>
+</section>
+
+<section id="beispiele">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Beispielräume</span>
+      <h2>Sechs Häuser, sechs Interpretationen.</h2>
+      <p>Illustrative Beispiele — kein real existierender VITARO-Standort. Sie zeigen die Bandbreite an Stilen, nicht ein konkretes Projekt oder eine feste Preiskategorie.</p>
+    </div>
+    <div class="gallery-grid">
+      <button type="button" class="gallery-tile has-image"><img src="assets/media/vitaro-homegym-hero.jpg" alt="Home Gym mit Poolblick, viel Naturlicht" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image"><img src="assets/media/vitaro-homegym-2.jpg" alt="Home Gym mit Gartenblick, helles Holz" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image"><img src="assets/media/vitaro-homegym-3.jpg" alt="Home Gym in Waldlage, dunkles Farbkonzept" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image"><img src="assets/media/vitaro-homegym-4.jpg" alt="Home Gym im Loft-Stil, warme Töne" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image"><img src="assets/media/vitaro-homegym-5.jpg" alt="Home Gym mit Meerblick" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image"><img src="assets/media/vitaro-homegym-6.jpg" alt="Home Gym mit Bergpanorama, umfangreiche Ausstattung" loading="lazy"></button>
+    </div>
+  </div>
+</section>
+
+<section id="details">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Details</span>
+      <h2>Geräte, Materialien, Ausstattung.</h2>
+      <p>Nahaufnahmen einzelner Elemente, die in unseren Räumen wiederkehren.</p>
+    </div>
+    <div class="gallery-grid">
+      <button type="button" class="gallery-tile has-image portrait"><img src="assets/media/vitaro-homegym-detail-dumbbells.jpg" alt="Hantel- und Kettlebell-Wand" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image portrait"><img src="assets/media/vitaro-homegym-detail-rack.jpg" alt="Rack mit Langhantel und Hantelscheiben-Baum" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image portrait"><img src="assets/media/vitaro-homegym-detail-cable.jpg" alt="Cable-Funktionsturm" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image square"><img src="assets/media/vitaro-homegym-detail-floor.jpg" alt="Übergang zwischen Naturstein- und Gummiboden" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image portrait"><img src="assets/media/vitaro-homegym-detail-mirror.jpg" alt="Spiegelwand-Ecke mit Beleuchtung" loading="lazy"></button>
+      <button type="button" class="gallery-tile has-image portrait"><img src="assets/media/vitaro-homegym-detail-cardio.jpg" alt="Cardiogerät mit Panoramablick" loading="lazy"></button>
+    </div>
+    <p class="source-note" style="margin-top:8px;">Alle Bilder auf dieser Seite sind KI-generiertes Illustrationsmaterial und zeigen keinen real existierenden VITARO-Standort.</p>
+  </div>
+</section>
+
+<section class="section-tight" style="border-bottom:none;">
+  <div class="wrap" style="text-align:center;">
+    <h2 style="max-width:640px;margin:0 auto 14px;">Gefällt Ihnen eine Richtung besonders?</h2>
+    <p style="max-width:520px;margin:0 auto 28px;">Bringen Sie sie gerne ins Erstgespräch mit — das hilft uns, Ihren Raum schneller zu verstehen.</p>
+    <span style="display:inline-flex;gap:14px;flex-wrap:wrap;justify-content:center;"><a href="kontakt.html#contactForm" class="btn btn-primary">Kostenloses Erstgespräch anfragen</a></span>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <h2>Lassen Sie uns über Ihren Raum sprechen.</h2>
+        <p>Ob Sie schon einen Raum im Kopf haben oder erst planen, wo Platz wäre — der erste Schritt ist ein kostenloses Gespräch.</p>
+        <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="kontakt.html#contactForm" class="btn btn-primary">Kontakt aufnehmen</a>
+          <a href="pakete.html" class="btn btn-ghost">Pakete ansehen</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Unternehmen</h4>
+        <a href="leistungen.html">Leistungen</a>
+        <a href="pakete.html">Pakete &amp; Ablauf</a>
+        <a href="planer.html">Planer</a>
+        <a href="galerie.html">Galerie</a>
+        <a href="index.html#warum">Warum VITARO</a>
+        <a href="ressourcen.html">Ratgeber</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <a href="kontakt.html">Kontaktformular</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Ihr privates Fitnessstudio, gut geplant.</span>
+      <div class="footer-legal">
+        <span>© 2026 VITARO Home Gym. Ein Angebot von Vitaro Gym Solutions.</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutzerklärung</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Schließen">&times;</button>
+  <button type="button" class="lightbox-prev" id="lightboxPrev" aria-label="Vorheriges Bild">&#8249;</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <button type="button" class="lightbox-next" id="lightboxNext" aria-label="Nächstes Bild">&#8250;</button>
+  <p class="lightbox-caption" id="lightboxCaption"></p>
+</div>
+
+<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/auth.js?v=4"></script>
+</body>
+</html>

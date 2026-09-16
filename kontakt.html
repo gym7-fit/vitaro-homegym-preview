@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontakt — VITARO Home Gym</title>
+<meta name="description" content="Nehmen Sie Kontakt zu VITARO Home Gym auf — schildern Sie Ihr Vorhaben, wir melden uns für ein kostenloses Erstgespräch.">
+<link rel="canonical" href="https://vitaro-homegym.example/kontakt.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VITARO Home Gym">
+<meta property="og:title" content="Kontakt — VITARO Home Gym">
+<meta property="og:description" content="Schildern Sie Ihr Vorhaben — wir melden uns für ein kostenloses Erstgespräch.">
+<meta property="og:url" content="https://vitaro-homegym.example/kontakt.html">
+<meta property="og:image" content="https://vitaro-homegym.example/assets/media/vitaro-homegym-hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23f5efe6'/%3E%3Ctext x='50' y='69' font-size='58' font-family='Arial' font-weight='900' fill='%23181410' text-anchor='middle'%3EV%3C/text%3E%3C/svg%3E">
+<script>
+  (function(){
+    try{
+      var stored = localStorage.getItem('vitaro-theme');
+      var theme;
+      if(stored === 'dark' || stored === 'light'){ theme = stored; }
+      else { theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; }
+      document.documentElement.setAttribute('data-theme', theme);
+    }catch(e){}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=39">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-word">VITARO</span><span class="logo-sub"><span>HOME</span><span>GYMS</span></span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menü umschalten" aria-expanded="false" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-panel" id="navPanel">
+        <div class="nav-links">
+          <a href="leistungen.html">Leistungen</a>
+          <a href="pakete.html">Pakete &amp; Ablauf</a>
+          <a href="planer.html">Planer</a>
+          <a href="galerie.html">Galerie</a>
+          <a href="index.html#warum">Warum VITARO</a>
+          <a href="ressourcen.html">Ratgeber</a>
+          <a href="kontakt.html" class="active">Kontakt</a>
+        </div>
+        <div class="nav-cta">
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Hell-/Dunkelmodus umschalten" title="Hell-/Dunkelmodus umschalten">
+            <span class="icon-dark">&#9789;</span><span class="icon-light">&#9788;</span>
+          </button>
+          <span data-auth-slot></span>
+          <a href="kontakt.html" class="btn btn-primary">Erstgespräch anfragen</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="nav-backdrop" id="navBackdrop" onclick="closeMobileMenu()"></div>
+
+<main id="main">
+
+<section class="hero hero-sm">
+  <div class="wrap hero-content hero-inner">
+    <span class="eyebrow">Kontakt</span>
+    <h1>Lassen Sie uns über Ihren Raum sprechen.</h1>
+    <p class="lead">Schildern Sie uns kurz Ihr Vorhaben — wir melden uns für ein kostenloses, unverbindliches Erstgespräch.</p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="wrap">
+    <div class="contact-channels">
+      <div class="channel-card">
+        <h3>E-Mail</h3>
+        <p>Für allgemeine Fragen oder wenn Sie lieber nicht das Formular nutzen möchten.</p>
+        <a id="contactEmailLink" class="btn btn-ghost" href="#" data-contact-email hidden></a>
+        <p class="source-note" id="contactEmailPending">Unsere E-Mail-Adresse folgt in Kürze — bis dahin nutzen Sie bitte das Formular.</p>
+      </div>
+      <div class="channel-card">
+        <h3>Kostenloses Erstgespräch</h3>
+        <p>20 Minuten, unverbindlich — schildern Sie im Formular Ihr Vorhaben, wir schlagen Termine vor.</p>
+        <a href="#contactForm" class="btn btn-ghost">Zum Formular</a>
+      </div>
+    </div>
+
+    <div class="form-success" id="formSuccess" style="display:none;">
+      <h2 tabindex="-1">Vielen Dank — Ihre Nachricht ist angekommen.</h2>
+      <p>Wir melden uns in Kürze bei Ihnen. Bei dringenden Anliegen schreiben Sie uns gerne direkt eine E-Mail.</p>
+    </div>
+    <div id="contactFormWrap">
+      <h2 style="margin-bottom:28px;">Kostenloses Erstgespräch anfragen</h2>
+      <form id="contactForm" method="POST">
+        <input type="hidden" name="_subject" value="VITARO Home Gym — Anfrage">
+        <p class="hp-field">
+          <label>Bitte nicht ausfüllen, wenn Sie ein Mensch sind: <input name="_gotcha" tabindex="-1" autocomplete="off"></label>
+        </p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="contactName">Ihr Name</label>
+            <input type="text" id="contactName" name="contact_name" required autocomplete="name">
+          </div>
+          <div class="form-field">
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="phone">Telefon (optional)</label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel">
+          </div>
+          <div class="form-field">
+            <label for="location">PLZ / Ort</label>
+            <input type="text" id="location" name="location" required autocomplete="postal-code">
+          </div>
+          <div class="form-field">
+            <label for="roomSize">Raumgröße, ca. (m², optional)</label>
+            <input type="number" id="roomSize" name="room_size_m2" min="1" inputmode="numeric">
+          </div>
+          <div class="form-field">
+            <label for="budget">Budgetrahmen</label>
+            <select id="budget" name="budget">
+              <option value="" disabled selected>Bitte auswählen</option>
+              <option value="bis_15k">bis 15.000 €</option>
+              <option value="15_40k">15.000–40.000 €</option>
+              <option value="40_100k">40.000–100.000 €</option>
+              <option value="ueber_100k">über 100.000 €</option>
+              <option value="offen">noch offen</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="timeline">Zeitrahmen</label>
+            <select id="timeline" name="timeline">
+              <option value="" disabled selected>Bitte auswählen</option>
+              <option value="sofort">möglichst bald</option>
+              <option value="1_3m">in 1–3 Monaten</option>
+              <option value="3_6m">in 3–6 Monaten</option>
+              <option value="planung">noch in der Planungsphase</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="focus">Trainingsschwerpunkt</label>
+            <select id="focus" name="training_focus">
+              <option value="" disabled selected>Bitte auswählen</option>
+              <option value="kraft">Kraft</option>
+              <option value="cardio">Cardio</option>
+              <option value="funktional">Funktionelles Training</option>
+              <option value="gemischt">Gemischt</option>
+              <option value="offen">noch offen</option>
+            </select>
+          </div>
+          <fieldset class="form-field full form-radios-wrap">
+            <legend>Bevorzugter Kontaktweg</legend>
+            <div class="form-radios">
+              <label><input type="radio" name="preferred_contact" value="email" checked> <span>Per E-Mail</span></label>
+              <label><input type="radio" name="preferred_contact" value="call"> <span>Rückruf</span></label>
+            </div>
+          </fieldset>
+          <div class="form-field full">
+            <label for="message">Sonst noch etwas? (optional)</label>
+            <span class="hint">Vorhandener Raum, besondere Wünsche, Fragen — was immer hilfreich ist.</span>
+            <textarea id="message" name="message"></textarea>
+          </div>
+        </div>
+        <label class="form-consent">
+          <input type="checkbox" id="formConsent" name="consent" required>
+          <span><span>Ich bin einverstanden, dass VITARO Home Gym meine Angaben speichert und zur Beantwortung dieser Anfrage nutzt, gemäß der</span> <a href="datenschutz.html">Datenschutzerklärung</a>.</span>
+        </label>
+        <button type="submit" class="btn btn-primary" id="formSubmit">Anfrage senden</button>
+        <p class="form-error" id="formError" hidden>Senden fehlgeschlagen. Bitte versuchen Sie es gleich noch einmal oder schreiben Sie uns direkt per E-Mail.</p>
+        <p class="form-note">Sicher übermittelt über Formspree, das das Formular in unserem Auftrag verarbeitet. Wir nutzen Ihre Daten ausschließlich zur Beantwortung Ihrer Anfrage — siehe unsere Datenschutzerklärung.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <h2>Lassen Sie uns über Ihren Raum sprechen.</h2>
+        <p>Ob Sie schon einen Raum im Kopf haben oder erst planen, wo Platz wäre — der erste Schritt ist ein kostenloses Gespräch.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Unternehmen</h4>
+        <a href="leistungen.html">Leistungen</a>
+        <a href="pakete.html">Pakete &amp; Ablauf</a>
+        <a href="planer.html">Planer</a>
+        <a href="galerie.html">Galerie</a>
+        <a href="index.html#warum">Warum VITARO</a>
+        <a href="ressourcen.html">Ratgeber</a>
+      </div>
+      <div class="footer-col">
+        <h4>Kontakt</h4>
+        <a href="kontakt.html">Kontaktformular</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Ihr privates Fitnessstudio, gut geplant.</span>
+      <div class="footer-legal">
+        <span>© 2026 VITARO Home Gym. Ein Angebot von Vitaro Gym Solutions.</span>
+        <a href="impressum.html">Impressum</a>
+        <a href="datenschutz.html">Datenschutzerklärung</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js?v=6"></script>
+<script src="assets/js/auth.js?v=4"></script>
+<script>
+  if(location.search.indexOf('submitted=true') !== -1){
+    var wrap = document.getElementById('contactFormWrap');
+    var success = document.getElementById('formSuccess');
+    if(wrap) wrap.style.display = 'none';
+    if(success) success.style.display = 'block';
+  }
+</script>
+</body>
+</html>
