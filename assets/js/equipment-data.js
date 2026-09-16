@@ -44,11 +44,11 @@ var VITARO_EQUIPMENT = [
     icon: "cable",
     placement: "floor",
     tiers: {
-      budget:  { brand: "Gorilla Sports", model: "Kraftstation SmartGym H8",     price: 1199.99, url: "https://www.gorillasports.de/products/kabelzugstation-smartgym-h8", blurb: "Echter freistehender Doppelturm-Funktionstrainer mit doppeltem Gewichtsblock, kein einzelner Kabelzug-Aufsatz. Nach Prüfung bestätigt: 4,80★ bei 30 Bewertungen vor Ort." },
+      budget:  { brand: "Gorilla Sports", model: "Kabelzugstation SmartGym H8",   price: 1199.99, url: "https://www.gorillasports.de/products/kabelzugstation-smartgym-h8", blurb: "Wandmontierte Kabelzugstation, nur 14,3 cm tief — 50-kg-Gewichtsblock, 26 Zug-Positionen. Nach Prüfung korrigiert: keine freistehende Doppelturm-Anlage, sondern eine kompakte Wandstation wie die Premium-Option, nur mit Stahl/Acrylglas statt Holz." },
       premium: { brand: "NOHRD",          model: "SlimBeam Kabelzugstation",     price: 1899, priceNote: "ab", url: "https://www.fitshop.de/nohrd-kabelzugstation-slimbeam-no-15.112", blurb: "Wandmontierte Kabelzugstation aus deutscher Fertigung (Enger, NRW) mit echter Holzverkleidung — gebaut für den Wohnraum, nicht den Keller, deshalb der deutlich kleinere Platzbedarf." }
     },
-    footprint: { budget: { w: 150, d: 120 }, premium: { w: 40, d: 25 } },
-    note: "Premium ist wandmontiert (NOHRD SlimBeam, 40 cm breit, laut Hersteller 10 cm Wandabstand + 20 cm Auszug) — deshalb der deutlich kleinere Platzbedarf gegenüber dem freistehenden Einstiegsmodell.",
+    footprint: { budget: { w: 100, d: 30 }, premium: { w: 40, d: 25 } },
+    note: "Beide Stufen sind wandmontiert. Einstieg (Gorilla Sports SmartGym H8, Stahl/Acrylglas) ist mit 97 cm Breite deutlich wuchtiger als Premium (NOHRD SlimBeam, 40 cm breit, laut Hersteller 10 cm Wandabstand + 20 cm Auszug), das entsprechend weniger Platzbedarf hat.",
     clearance: { top: 60, bottom: 90, left: 60, right: 60, access: "bottom", sourceLabel: "Untere Faustregel-Spanne (60–91 cm) aus Fitness-Ratgebern für Privatgebrauch. Ein Hersteller-Handbuch (TRUE Fitness, kommerzieller Doppelturm) nennt bis zu 254 cm — für ein einzelnes Heimgerät nicht übertragbar." }
   },
   {

@@ -595,7 +595,12 @@
      lautlos das gebaute JS-Modell. Fehlt die Datei/der Loader, bleibt der
      JS-Fallback stehen. ---------- */
   var GLB_MODELS = {
-    chestpress: { url: "assets/models/chestpress.glb", yaw: 0 }
+    chestpress: { url: "assets/models/chestpress.glb", yaw: 0 },
+    bench: { url: "assets/models/bench.glb", yaw: 0 },
+    cable: {
+      budget: { url: "assets/models/cable_budget.glb", yaw: 0 },
+      premium: { url: "assets/models/cable_premium.glb", yaw: 0 }
+    }
   };
   var glbCache = {}; // url -> { obj, pending:[cb], failed:bool }
 
@@ -853,7 +858,10 @@
       var hCm = EQUIP_H[it.catId] || EQUIP_H_DEFAULT;
       var built3d = MODELS[it.catId] ? MODELS[it.catId](fp, it.tier) : buildBox(fp, it.tier, hCm);
       var g = built3d;
-      var glbCfg = GLB_MODELS[it.catId];
+      // GLB_MODELS ist pro Kategorie UND Stufe konfigurierbar:
+      // { url, yaw } (gilt fuer beide Stufen) oder { budget:{...}, premium:{...} }.
+      var glbEntry = GLB_MODELS[it.catId];
+      var glbCfg = glbEntry && (glbEntry.url ? glbEntry : glbEntry[it.tier]);
       if (glbCfg && typeof THREE.GLTFLoader !== "undefined" && !(glbCache[glbCfg.url] && glbCache[glbCfg.url].failed)) {
         g = new THREE.Group();
         g.add(built3d); // Platzhalter bis das GLB da ist (oder falls es scheitert)

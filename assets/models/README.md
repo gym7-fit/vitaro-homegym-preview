@@ -38,3 +38,12 @@ nicht +Z (nach vorn) entspricht.
   B128×L98×H125 cm und den Referenzfotos (Front/Seite/Oben +
   Montageanleitung-Titelbild). Nur die Einstiegsstufe; Premium
   (Hammer Strength Select) nutzt weiter das gebaute JS-Modell.
+- `bench.glb` — Gorilla Sports verstellbare Hantelbank. Beide Stufen
+  nutzen dasselbe Modell (Bank unterscheidet sich zwischen den Stufen
+  in `equipment-data.js` nicht wesentlich).
+- `cable_budget.glb` — Gorilla Sports Kabelzugstation SmartGym H8,
+  wandmontierte Einzelsäule (97×14,3×198 cm), Stahlrahmen, schwarze
+  Acrylglas-Abdeckung, Lochraster, 2 Umlenkrollen.
+- `cable_premium.glb` — NOHRD SlimBeam, schlanke Holzsäule (40 cm
+  breit, 215 cm hoch), Edelstahl-Beschläge, 15er Gewichtsstapel,
+  Klimmzugstange oben.
