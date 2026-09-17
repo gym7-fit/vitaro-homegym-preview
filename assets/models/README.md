@@ -22,6 +22,18 @@ das Ergebnis (`*.glb`) schon. Ein Modell neu bauen/ändern:
 4. `<kategorie>.glb` hierher kopieren, in `planer-3d.js` unter
    `GLB_MODELS` eintragen (`{ url: "assets/models/<kategorie>.glb", yaw: 0 }`).
 
+**Wichtig — Achsenkonvention:** lokal-X muss im fertigen GLB immer der
+`w`-Wert aus `equipment-data.js` (Breite) entsprechen, lokal-Z immer
+`d` (Tiefe) — `fitGlb()` in `planer-3d.js` skaliert sonst mit dem
+falschen Seitenverhältnis und macht das Modell im Live-Planer winzig
+oder verzerrt. Bei länglichen Geräten (Laufband/Bike/Rudergerät), bei
+denen die lange Achse aus Bauplan-Sicht eher "Tiefe/Fahrtrichtung" ist,
+NICHT einfach x/z vertauscht bauen — stattdessen normal bauen und vor
+`render_and_export(...)` `swap_footprint_axes()` aufrufen (Helfer in
+`common.py`, rotiert alles um 90° und backt es ein). Rundteile
+(`tube`/`cyl`/`sphere`/`helix_spring`) werden von `common.py`
+automatisch glatt schattiert (`shade_auto_smooth`) statt facettiert.
+
 ## Funktionsweise in der App
 
 `GLB_MODELS` in `planer-3d.js` ordnet einer Kategorie-ID eine GLB-Datei
@@ -66,7 +78,8 @@ nicht +Z (nach vorn) entspricht.
   Laufband, Motorhaube vorn, konvergierende Lenkerholme zur Konsole.
 - `treadmill_premium.glb` — NOHRD Sprintbok V.2: motorloses,
   gebogenes Lamellen-Laufband mit Echtholz-Seitenschienen.
-- `bike_budget.glb` — cardiostrong IB50 Incline Bike: geschlossenes
-  Schwungrad hinten, Rennlenker, Sattel, durchgehender Hauptrahmen.
+- `bike_budget.glb` — cardiostrong IB50 Incline Bike: geneigte Aero-
+  Rahmenspange, großes geneigtes Kapsel-Schwungradgehäuse mittig-vorn,
+  Aero-Lenker mit Ellbogenpolstern.
 - `bike_premium.glb` — Concept2 BikeErg: offenes Speichen-Schwungrad
   vorn (Luftwiderstand), Aluminium-Rahmen, PM5-Monitorarm.

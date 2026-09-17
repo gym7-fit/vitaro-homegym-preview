@@ -35,7 +35,8 @@ var VITARO_EQUIPMENT = [
       budget:  { brand: "Gorilla Sports", model: "Verstellbare Hantelbank",     price: 129.99, url: "https://www.gorillasports.de/products/verstellbare-hantelbank", blurb: "Robuste Mehrpositionsbank für Flach-, Schräg- und Negativtraining — solide Standardausführung für den Hausgebrauch." },
       premium: { brand: "ATX Fitness",    model: "Verstellbare Hantelbank MBX-520", price: 359, url: "https://www.megafitness.shop/atx-multi-bench-mbx-520-modell-2023.html", blurb: "Massiver Rahmen mit modularem Anbau-System (u. a. Beinbeuger, Bizepscurl); 32 verifizierte Vor-Ort-Bewertungen bestätigen die Verarbeitungsqualität." }
     },
-    footprint: { budget: { w: 140, d: 65 }, premium: { w: 140, d: 65 } },
+    footprint: { budget: { w: 156, d: 51 }, premium: { w: 156, d: 51 } },
+    note: "Footprint nach Herstellerdatenblatt (Gorilla Sports, ausgezogen) korrigiert: 156x51cm statt der zuvor geschätzten 140x65cm. Premium (ATX MBX-520) teilt sich dasselbe 3D-Modell mangels eigener verifizierter Maßangabe.",
     clearance: { top: 45, bottom: 45, left: 60, right: 60, access: "right", sourceLabel: "Faustregel aus Fitness-Planungsratgebern (mind. 60 cm), für Privatgebrauch angesetzt — der teils genannte Wert von 150–180 cm bezog sich aufs Verschieben der Bank selbst, nicht auf reinen Trainingsbetrieb. Keine DIN-/DGUV-Vorschrift." }
   },
   {
