@@ -30,6 +30,7 @@
 
   var toggleBtn, panel, heightInput, heightLabel, wallBtn, zoomInBtn, zoomOutBtn;
   var renderer, scene, camera, roomGroup, wallEdges = [], raf = null, built = false;
+  var syncTimer = null, lastStateRaw = null;
   var target, theta = Math.PI * 0.72, phi = Math.PI * 0.34, radius = 9, radiusMin = 2.2, radiusMax = 40;
   var wallMode = "front"; // "all" | "front" | "none"
   var WALL_MODES = ["front", "all", "none"];
@@ -57,10 +58,33 @@
     if (!built && !renderer) buildOnce();
     if (!built) return;
     rebuildRoom();
+    lastStateRaw = localStorage.getItem(STORAGE_KEY);
     resize();
     loop();
+    startSync();
   }
-  function closePanel() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+  function closePanel() {
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    stopSync();
+  }
+  // Live-Abgleich: der 2D-Planer schreibt seinen Zustand in localStorage,
+  // feuert dabei aber kein Event im selben Tab (das "storage"-Event greift
+  // nur tab-uebergreifend). Deshalb waehrend offener 3D-Ansicht periodisch
+  // auf Aenderungen pruefen und bei Bedarf neu aufbauen -- ohne den
+  // 2D-Planer selbst anzufassen.
+  function startSync() {
+    stopSync();
+    syncTimer = setInterval(function () {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw !== lastStateRaw) {
+        lastStateRaw = raw;
+        rebuildRoom();
+      }
+    }, 500);
+  }
+  function stopSync() {
+    if (syncTimer) { clearInterval(syncTimer); syncTimer = null; }
+  }
 
   /* ---------- Zustand lesen (ohne den 2D-Planer anzufassen) ---------- */
   function readState() {
