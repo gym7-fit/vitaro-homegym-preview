@@ -9,6 +9,47 @@
 var FORMSPREE_ENDPOINT = 'https://formspree.io/f/xwlkrkoy';
 var CONTACT_EMAIL = 'vitaro.gymsolutions@gmail.com';
 
+/* Kontaktformular landet zusaetzlich zur Formspree-Mail als Zeile in der
+   echten Kunden-Datenbank (Supabase, Tabelle "kunden") -- dieselbe
+   Anbindung wie schon bei der Planer-Registrierung (assets/js/auth.js,
+   syncToSupabase()). Oeffentlicher "anon"-Key, Row-Level-Security erlaubt
+   von der Webseite aus nur Einfuegen, kein Lesen/Aendern/Loeschen -- kein
+   Geheimnis, absichtlich im Client-Code sichtbar. Fire-and-forget: darf
+   die eigentliche Formspree-Anfrage nie blockieren oder verzoegern. */
+var SUPABASE_URL = "https://xgkujmwcumcpibfkvmnr.supabase.co";
+var SUPABASE_ANON_KEY = "sb_publishable_wVMpntBaoBl05u7-x5EySA_JJQg2A-m";
+function syncContactToSupabase(form){
+  try{
+    var f = function(name){ var el = form.querySelector('[name="' + name + '"]'); return el ? el.value.trim() : ""; };
+    if(f("_gotcha")) return; // Honeypot ausgefuellt -> vermutlich Bot, wie bei Formspree ignorieren
+    var BUDGET_LABELS = { bis_15k:"bis 15.000 €", "15_40k":"15.000–40.000 €", "40_100k":"40.000–100.000 €", ueber_100k:"über 100.000 €", offen:"noch offen" };
+    var TIMELINE_LABELS = { sofort:"möglichst bald", "1_3m":"in 1–3 Monaten", "3_6m":"in 3–6 Monaten", planung:"noch in der Planungsphase" };
+    var FOCUS_LABELS = { kraft:"Kraft", cardio:"Cardio", funktional:"Funktionelles Training", gemischt:"Gemischt", offen:"noch offen" };
+    var notizLines = [];
+    if(f("location")) notizLines.push("PLZ/Ort: " + f("location"));
+    if(f("room_size_m2")) notizLines.push("Raumgröße: ca. " + f("room_size_m2") + " m²");
+    if(f("budget")) notizLines.push("Budget: " + (BUDGET_LABELS[f("budget")] || f("budget")));
+    if(f("timeline")) notizLines.push("Zeitrahmen: " + (TIMELINE_LABELS[f("timeline")] || f("timeline")));
+    if(f("training_focus")) notizLines.push("Trainingsschwerpunkt: " + (FOCUS_LABELS[f("training_focus")] || f("training_focus")));
+    var preferred = form.querySelector('[name="preferred_contact"]:checked');
+    if(preferred) notizLines.push("Bevorzugter Kontaktweg: " + (preferred.value === "call" ? "Rückruf" : "E-Mail"));
+    if(f("message")) notizLines.push("Nachricht: " + f("message"));
+    fetch(SUPABASE_URL + "/rest/v1/kunden", {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify({
+        name: f("contact_name"), email: f("email"), telefon: f("phone"),
+        quelle: "Kontaktformular", notizen: notizLines.join("\n")
+      })
+    }).catch(function(){});
+  }catch(e){}
+}
+
 (function(){
   var mail = document.querySelector('[data-contact-email]');
   var pending = document.getElementById('contactEmailPending');
@@ -235,6 +276,7 @@ document.querySelectorAll('.faq-list').forEach(function(list){
       return;
     }
     if(submitBtn){ submitBtn.disabled = true; }
+    syncContactToSupabase(form);
 
     fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
