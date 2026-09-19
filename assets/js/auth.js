@@ -46,7 +46,11 @@
           "Content-Type": "application/json",
           "Prefer": "return=minimal"
         },
-        body: JSON.stringify({ name: name, email: email, telefon: phone, quelle: "Planer-Registrierung" })
+        body: JSON.stringify({
+          name: name, email: email, telefon: phone, quelle: "Planer-Registrierung",
+          letzte_aktivitaet: new Date().toISOString(),
+          dsgvo_einwilligung_am: new Date().toISOString(), dsgvo_quelle: "Planer-Registrierung-Checkbox"
+        })
       }).catch(function(){});
     }catch(e){}
   }

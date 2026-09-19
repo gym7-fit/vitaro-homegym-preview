@@ -44,7 +44,9 @@ function syncContactToSupabase(form){
       },
       body: JSON.stringify({
         name: f("contact_name"), email: f("email"), telefon: f("phone"),
-        quelle: "Kontaktformular", notizen: notizLines.join("\n")
+        quelle: "Kontaktformular", notizen: notizLines.join("\n"),
+        letzte_aktivitaet: new Date().toISOString(),
+        dsgvo_einwilligung_am: new Date().toISOString(), dsgvo_quelle: "Kontaktformular-Checkbox"
       })
     }).catch(function(){});
   }catch(e){}
