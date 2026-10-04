@@ -1,0 +1,23 @@
+name: Keep Supabase project alive
+# Der Kunden-Datenbank-Zugriff (auth.js -> syncToSupabase) laeuft nur bei
+# echten Registrierungen. Auf dem Supabase-Free-Tier pausiert das Projekt
+# automatisch nach 7 Tagen ohne API-Aktivitaet. Dieser Workflow pingt
+# alle 3 Tage die REST-API mit dem oeffentlichen anon-Key (steht ohnehin
+# schon offen im Client-Code, kein Geheimnis) an, um das zu verhindern.
+on:
+  schedule:
+    - cron: "17 6 */3 * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://xgkujmwcumcpibfkvmnr.supabase.co/rest/v1/kunden?select=id&limit=1" \
+            -H "apikey: sb_publishable_wVMpntBaoBl05u7-x5EySA_JJQg2A-m" \
+            -H "Authorization: Bearer sb_publishable_wVMpntBaoBl05u7-x5EySA_JJQg2A-m")
+          echo "Supabase antwortete mit HTTP $code"
+          if [ "$code" -ge 500 ]; then exit 1; fi
